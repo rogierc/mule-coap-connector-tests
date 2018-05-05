@@ -1,0 +1,45 @@
+#%RAML 1.0
+title: API that performs Mule-CoAP-Connector tests. 
+
+baseUri: /
+
+/etsi-plugtest:
+  description: "ETSI Plugtests: 
+    See ETSI CTI Plugtests Guide V0.0.13 (2012-11)
+    https://portal.etsi.org/cti/downloads/TestSpecifications/CoAP_2_Plugtests_TestDescriptions_v013.pdf"
+   
+  /TD_COAP_CORE_01:
+    description: Perform GET transaction (CON mode)
+    get:
+      queryParameters: 
+        host:
+          type: string
+          required: false
+          example: californium.eclipse.org
+        port:
+          type: integer
+          required: false
+          example: 5683
+      responses:
+        200:
+          body: 
+            text/plain:
+              description: "test result"
+  /TD_COAP_CORE_02:
+    description: Perform DELETE transaction (CON mode)
+    get:
+      queryParameters: 
+        host:
+          type: string
+          required: false
+          example: californium.eclipse.org
+        port:
+          type: integer
+          required: false
+          example: 5683
+      responses:
+        200:
+          body: 
+            text/plain:
+              description: "test result"
+              

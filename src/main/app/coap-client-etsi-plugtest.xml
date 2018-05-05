@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
+    <coap-client:config name="ETSI-Plugtest_Client" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration"/>
+    <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
+    
+    <choice-exception-strategy name="client-exception-strategy" >
+        <catch-exception-strategy doc:name="Catch Validation Exception" when="#[exception.causedBy(org.mule.extension.validation.api.ValidationException)]">
+            <set-property propertyName="http.response.code" value="503" doc:name="set 503"/>
+            <set-payload value="#[exception.getMessage()]" encoding="UTF-8" mimeType="text/plain" doc:name="Set validation message"/>
+        </catch-exception-strategy>
+        <rollback-exception-strategy doc:name="Rollback Exception Strategy">
+            <logger level="INFO" doc:name="Logger" message="Unknown error"/>
+        </rollback-exception-strategy>
+    </choice-exception-strategy>
+    
+    <flow name="coap-client-etsi-plugtest-TD_COAP_CORE_01">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="set params"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/test" doc:name="CoAP Client" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CONTENT" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
+        <set-payload value="Test OK
+" doc:name="Set Payload"/>
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy"/>
+    </flow>
+    
+    
+    <sub-flow name="coap-client-etsi-plugtest-set-params">
+        <choice doc:name="set host if present">
+            <when expression="#[ message.inboundProperties.'http.query.params'.host != empty ]">
+                <set-variable variableName="host" value="#[ message.inboundProperties.'http.query.params'.host ]" doc:name="set host"/>
+            </when>
+            <otherwise>
+                <set-variable variableName="host" value="127.0.0.1" doc:name="set localhost"/>
+            </otherwise>
+        </choice>
+                <choice doc:name="set port if present">
+            <when expression="#[ message.inboundProperties.'http.query.params'.port != empty ]">
+                <set-variable variableName="port" value="#[ message.inboundProperties.'http.query.params'.port ]" doc:name="set port"/>
+            </when>
+            <otherwise>
+                <set-variable variableName="port" value="5683" doc:name="set port"/>
+            </otherwise>
+        </choice>
+    </sub-flow>
+</mule>

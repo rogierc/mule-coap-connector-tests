@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd">
+    <coap-server:config name="CoAP_ETSI_Plugtest_Server" doc:name="CoAP Server: Server Configuration">
+        <coap-server:resources>
+            <coap-server:resource name="large_update" get="true" put="true" size="2048"/>
+            <coap-server:resource name="obs" get="true" observe="true"/>
+            <coap-server:resource name="test" get="true" put="true"/>
+            <coap-server:resource name="large_create" get="true" post="true" size="2048"/>
+            <coap-server:resource name="separate" get="true" earlyAck="true"/>
+            <coap-server:resource name="seg1" get="true">
+                <coap-server:resources>
+                    <coap-server:resource name="seg2" get="true">
+                        <coap-server:resources>
+                            <coap-server:resource name="seg3" get="true"/>
+                        </coap-server:resources>
+                    </coap-server:resource>
+                </coap-server:resources>
+            </coap-server:resource>
+            <coap-server:resource name="large" get="true" size="2048"/>
+            <coap-server:resource name="query" get="true"/>
+        </coap-server:resources>
+    </coap-server:config>
+    <flow name="coap-server-etsi-plugtestFlow">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/test" doc:name="CoAP ETSI Plugtest listen /test"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="TD_COAP_CORE_01 received GET, request payload was: #[payload]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
+				
+			</when>
+
+			<otherwise>
+                <set-payload value="Unexpected method" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+				
+			</otherwise>
+		</choice>
+    </flow>
+</mule>

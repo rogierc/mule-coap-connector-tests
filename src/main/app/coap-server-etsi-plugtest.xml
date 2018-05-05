@@ -10,7 +10,7 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
         <coap-server:resources>
             <coap-server:resource name="large_update" get="true" put="true" size="2048"/>
             <coap-server:resource name="obs" get="true" observe="true"/>
-            <coap-server:resource name="test" get="true" put="true"/>
+            <coap-server:resource name="test" get="true" put="true" delete="true" post="true"/>
             <coap-server:resource name="large_create" get="true" post="true" size="2048"/>
             <coap-server:resource name="separate" get="true" earlyAck="true"/>
             <coap-server:resource name="seg1" get="true">
@@ -26,7 +26,8 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
             <coap-server:resource name="query" get="true"/>
         </coap-server:resources>
     </coap-server:config>
-    <flow name="coap-server-etsi-plugtestFlow">
+    
+    <flow name="coap-server-etsi-plugtest-test">
         <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/test" doc:name="CoAP ETSI Plugtest listen /test"/>
         <logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
@@ -36,18 +37,168 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
 		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
 			doc:name="set uri"/>
 
-		<choice doc:name="Choice">
+		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
-                <set-payload value="TD_COAP_CORE_01 received GET, request payload was: #[payload]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
+                <set-payload value="TD_COAP_CORE_01/05/10 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
                 <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
                 <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 
-			<otherwise>
-                <set-payload value="Unexpected method" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+			<when expression="#[ flowVars.method == 'DELETE']">
+                <set-payload value="TD_COAP_CORE_02/06 received DELETE" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_02 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
 				
+			</when>
+
+			<when expression="#[ flowVars.method == 'PUT']">
+                <choice doc:name="check content format">
+                    <when expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]">
+                        <set-payload value="TD_COAP_CORE_03/07 received PUT" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_03 response payload"/>
+                        <set-property propertyName="coap.response.code" value="CHANGED" doc:name="CHANGED"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="Expected text/plain" doc:name="Expected text/plain"/>
+                        <set-property propertyName="coap.response.code" value="NOT_ACCEPTABLE" doc:name="NOT_ACCEPTABLE"/>
+                    </otherwise>
+                </choice>
+				
+			</when>
+
+			<when expression="#[ flowVars.method == 'POST']">
+                <choice doc:name="check content format">
+                    <when expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]">
+                        <set-payload value="TD_COAP_CORE_04/08 received POST" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_04 response payload"/>
+                        <set-property propertyName="coap.response.code" value="CREATED" doc:name="CREATED"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="Expected text/plain" doc:name="Expected text/plain"/>
+                        <set-property propertyName="coap.response.code" value="NOT_ACCEPTABLE" doc:name="NOT_ACCEPTABLE"/>
+                    </otherwise>
+                </choice>
+			</when>			
+			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
 			</otherwise>
 		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    <flow name="coap-server-etsi-plugtest-separate">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/separate" doc:name="CoAP ETSI Plugtest listen /separate"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="TD_COAP_CORE_09/11 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
+				
+			</when>
+
+			<when expression="#[ flowVars.method == 'DELETE']">
+                <set-payload value="TD_COAP_CORE_02/06 received DELETE" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_02 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
+				
+			</when>
+
+			<when expression="#[ flowVars.method == 'PUT']">
+                <choice doc:name="check content format">
+                    <when expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]">
+                        <set-payload value="TD_COAP_CORE_03/07 received PUT" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_03 response payload"/>
+                        <set-property propertyName="coap.response.code" value="CHANGED" doc:name="CHANGED"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="Expected text/plain" doc:name="Expected text/plain"/>
+                        <set-property propertyName="coap.response.code" value="NOT_ACCEPTABLE" doc:name="NOT_ACCEPTABLE"/>
+                    </otherwise>
+                </choice>
+				
+			</when>
+
+			<when expression="#[ flowVars.method == 'POST']">
+                <choice doc:name="check content format">
+                    <when expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]">
+                        <set-payload value="TD_COAP_CORE_04/08 received POST" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_04 response payload"/>
+                        <set-property propertyName="coap.response.code" value="CREATED" doc:name="CREATED"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="Expected text/plain" doc:name="Expected text/plain"/>
+                        <set-property propertyName="coap.response.code" value="NOT_ACCEPTABLE" doc:name="NOT_ACCEPTABLE"/>
+                    </otherwise>
+                </choice>
+			</when>			
+			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+
+    <flow name="coap-server-etsi-plugtest-seg1-3">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/seg1/seg2/seg3" doc:name="CoAP ETSI Plugtest listen /separate"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="TD_COAP_CORE_13 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_13 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
+				
+			</when>
+			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="coap-server-etsi-plugtest-query">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/query" doc:name="CoAP ETSI Plugtest listen /separate"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="TD_COAP_CORE_14 received GET with query: #[message.inboundProperties.'coap.opt.uri_query']" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_14 response payload"/>
+                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+                <logger level="INFO" doc:name="Logger"/>
+				
+			</when>
+			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
     </flow>
 </mule>

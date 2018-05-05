@@ -91,4 +91,8 @@
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_14" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
+    <flow name="get:/etsi-plugtest/TD_COAP_CORE_17:Router">
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_17" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
 </mule>

@@ -100,7 +100,7 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
 
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
-                <set-payload value="TD_COAP_CORE_09/11 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
+                <set-payload value="TD_COAP_CORE_09/11/17 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
                 <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
                 <logger level="INFO" doc:name="Logger"/>
 				

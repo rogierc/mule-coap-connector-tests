@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
+<mule xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:apikit="http://www.mulesoft.org/schema/mule/apikit" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:http="http://www.mulesoft.org/schema/mule/http" xmlns:spring="http://www.springframework.org/schema/beans" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+http://www.mulesoft.org/schema/mule/http http://www.mulesoft.org/schema/mule/http/current/mule-http.xsd
+http://www.mulesoft.org/schema/mule/apikit http://www.mulesoft.org/schema/mule/apikit/current/mule-apikit.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd">
     <http:listener-config name="HTTP_Listener_Configuration" host="0.0.0.0" port="8083" doc:name="HTTP Listener Configuration" />
     <apikit:config name="Router" raml="mule-coap-test-front-end.raml" consoleEnabled="true" consolePath="console" keepRamlBaseUri="false" doc:name="Router" />
     <apikit:mapping-exception-strategy name="ExceptionMapping">
@@ -93,6 +98,14 @@
     </flow>
     <flow name="get:/etsi-plugtest/TD_COAP_CORE_17:Router">
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_17" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/TD_COAP_CORE_18:Router">
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_18" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/TD_COAP_CORE_19:Router">
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_19" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
 </mule>

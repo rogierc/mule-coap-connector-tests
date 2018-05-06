@@ -305,6 +305,46 @@ resourceTypes:
             empty Payload;
           Server sends response containing:
             Type = 1 (NON);
-            Code = 69 (2.05 content);"
+            Code = 69 (2.05 content);
+            Not empty Payload;
+            Content format option;"
      
-       
+  /TD_COAP_CORE_18:
+    description: Perform POST transaction with responses containing 
+      several Location-Path options (CON mode)
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send a confirmable POST request to
+        server’s resource. The request sent by the client contains:
+          Type = 0 (CON);
+          Code = 2 (POST);
+          An arbitrary payload;
+          Content-format option;"
+      responses:
+        200:
+          description: "Server sends response containing:
+            Code = 65 (2.01 created);
+            Option type = Location-Path (one for each segment);
+            Option values must contain 
+            'location1', 'location2' & 'location3' without containing any ‘/’;"
+
+  /TD_COAP_CORE_19:
+    description: Perform POST transaction with responses containing several Location-Query options
+      (CON mode)
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send a confirmable POST request to
+        server’s resource  /location-query.
+        The request sent by the client contains:
+          Type = 0 (CON);
+          Code = 2 (POST);
+          An arbitrary payload;
+          Content-format option;"
+      responses:
+        200:
+          description: "Server sends response containing:
+            Code = 65 (2.01 created);
+            Two options whose type is Location-Query;
+            The first option contains first=1 ;
+            The second option contains second=2 ;"
+ 

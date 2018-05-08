@@ -347,4 +347,88 @@ resourceTypes:
             Two options whose type is Location-Query;
             The first option contains first=1 ;
             The second option contains second=2 ;"
+
+  /TD_COAP_CORE_20:
+    description: "Perform GET transaction containing the Accept option (CON mode)
+      (CON mode). Server should provide a resource /multi-format which exists in two formats:
+      - text/plain;charset=utf-8;
+      - application/xml;"
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send two confirmable GET requests to
+        server’s resource
+        The first request sent request by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+          Option: type = Accept, value = 0 (text/plain;charset=utf-8);
+        The second request sent by the client contains:
+           Type = 0 (CON);
+           Code = 1 (GET);
+           Option: type = Accept, value = 41 (application/xml);"
+      responses:
+        200:
+          description: "Server sends response on first request containing:
+              Code = 69 (2.05 content);
+              Option type = Content-Format, value = 0 (text/plain;charset=utf-8);
+              Payload = Content of the requested resource in text/plain;charset=utf-8 format;
+            Server sends response on second request containing:       
+              Code = 69 (2.05 content);
+              Option: type = Content-Format, value = 41 (application/xml);
+              Payload = Content of the requested resource in application/xml format;"
+
+  /TD_COAP_CORE_21:
+    description: "Perform GET transaction containing the ETag option (CON mode)
+      Server should offer a /validate resource which vary in time;
+      Client & server supports ETag option;
+      The Client ‘s cache must be purged;"
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send a confirmable GET request to
+        server’s resource
+
+        The first request sent request by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+          No ETag option
+
+        Client is requested to send confirmable GET request to
+        server’s resource so as to check if the resource was updated.
+        The second request sent by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+          Option Type=ETag;
+          Option value=the ETag value received on first request
+          
+        Update the content of the server’s resource from a CoAP
+        client.
+        Client is requested to send a confirmable GET request to
+        server’s resource so as to check if the resource was updated
+        The third request sent by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+          Option Type=ETag;
+          Option value=the ETag value received on first request."
+      responses:
+        200:
+          description: "Server sends response on first request containing:
+              Code = 69 (2.05 content);
+              Option type = ETag;
+              Option value = an arbitrary ETag value;
+              Not empty Payload;
+
+            Server sends response on second request containing:       
+              Code = 67 (2.03 Valid);
+              Option type = ETag;
+              Option value = the ETag value sent in first response;
+              An empty payload;
+              
+            Server sends response on third request containing:
+              Code = 69 (2.05 Content)
+              Option type = ETag
+              Option value = an arbitrary ETag value which differs from
+              the ETag sent in first response.
+              The payload of the requested resource, which should be
+              different from the payload in first response.
+
+"
  

@@ -275,4 +275,110 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 #[payload]" doc:name="Set Payload"/>        
     </sub-flow >
 
+    
+    <sub-flow name="coap-client-etsi-plugtest-TD_COAP_CORE_20">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/>
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-property propertyName="coap.opt.accept" value="0" doc:name="set coap.opt.accept"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/multi-format" doc:name="CoAP Get /multi-format" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="response1" value="#[payload]" doc:name="save response1"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is unequal CONTENT" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.05' ]" doc:name="Validation coap.response.code"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response content_format unequal text/plain" 
+        	expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]" doc:name="Validation coap.opt.content_format"/>
+        
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-property propertyName="coap.opt.accept" value="41" doc:name="set coap.opt.accept"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/multi-format" doc:name="CoAP Get /multi-format" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="response2" value="#[payload]" doc:name="save response1"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is unequal CONTENT" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.05' ]" doc:name="Validation coap.response.code"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response content_format unequal application/xml" 
+        	expression="#[message.inboundProperties.'coap.opt.content_format' == 41 ]" doc:name="Validation coap.opt.content_format"/>
+        
+        <set-payload value="Test OK:
+response 1: #[flowVars.response1] ;
+response 2: #[flowVars.response2]  ;" doc:name="Set Payload"/>       
+    </sub-flow >
+    
+    <sub-flow name="coap-client-etsi-plugtest-TD_COAP_CORE_21">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/>
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/validate" doc:name="CoAP Get /validate" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="response1" value="#[payload]" doc:name="save response1"/>
+        <set-variable variableName="etag1" value="#[message.inboundProperties.'coap.opt.etag.list' != empty ? message.inboundProperties.'coap.opt.etag.list'.getFirst() : null ]" doc:name="save etag1"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is unequal CONTENT" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.05' ]" doc:name="Validation coap.response.code"/>
+        <validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response should have etag option." 
+        	expression="#[ flowVars.etag1 != empty ]" doc:name="Validation coap.opt.etag"/>
+        
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-property propertyName="coap.opt.etag.list" value="#[flowVars.etag1]" doc:name="set coap.opt.etag.list"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/validate" doc:name="CoAP Get /validate" host="#[flowVars.host]" port="#[flowVars.port]"/>
+       	<logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="response2" value="#[payload]" doc:name="save response2"/>
+        <set-variable variableName="etag2" value="#[message.inboundProperties.'coap.opt.etag.list' != empty ? message.inboundProperties.'coap.opt.etag.list'.getFirst() : null ]" doc:name="save etag2"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is unequal VALID" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.03' ]" doc:name="Validation coap.response.code"/>
+        <validation:validate-size config-ref="Validation_Configuration" 
+        	message="CoAP response should be empty" 
+        	 doc:name="Validation empty payload" max="0" min="0" value="#[payload]"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response should have etag option." 
+        	expression="#[flowVars.etag2 != empty ]" doc:name="Validation coap.opt.etag"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response etag should be identical." 
+        	expression="#[ flowVars.etag2.equals( flowVars.etag1 )]" doc:name="Validation coap.opt.etag"/>
+
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-property propertyName="coap.opt.etag.list" value="#[flowVars.etag1]" doc:name="set coap.opt.etag.list"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/validate" doc:name="CoAP Get /validate" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="response3" value="#[payload]" doc:name="save response3"/>
+        <set-variable variableName="etag3" value="#[message.inboundProperties.'coap.opt.etag.list' != empty ? message.inboundProperties.'coap.opt.etag.list'.getFirst() : null ]" doc:name="save etag3"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is unequal CONTENT" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.05' ]" doc:name="Validation coap.response.code"/>
+        <validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response should have etag option." 
+        	expression="#[flowVars.etag3 != empty ]" doc:name="Validation coap.opt.etag"/>
+        <validation:is-false config-ref="Validation_Configuration" 
+        	message="CoAP response etag should not be identical." 
+        	expression="#[flowVars.etag3.equals( flowVars.etag1 )]" doc:name="Validation coap.opt.etag"/>
+        
+        <set-payload value="Test OK:   
+etag 1: #[flowVars.etag1] ;   
+etag 2: #[flowVars.etag2] ;   
+etag 3: #[flowVars.etag3] ;   
+response 1: #[flowVars.response1] ;  
+response 2: #[flowVars.response2] ;  
+response 3: #[flowVars.response3] ; " doc:name="Set Payload"/>       
+    </sub-flow >
 </mule>

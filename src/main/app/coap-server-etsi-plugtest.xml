@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+<mule xmlns:jms="http://www.mulesoft.org/schema/mule/jms" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd
-http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd">
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
     <coap-server:config name="CoAP_ETSI_Plugtest_Server" doc:name="CoAP Server: Server Configuration">
         <coap-server:resources>
             <coap-server:resource name="test" get="true" put="true" delete="true" post="true"/>
@@ -26,6 +28,8 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
             <coap-server:resource name="large_update" get="true" put="true" size="2048"/>
             <coap-server:resource name="large_create" get="true" post="true" size="2048"/>
             <coap-server:resource name="obs" get="true" observe="true"/>
+            <coap-server:resource name="multi-format" get="true"/>
+            <coap-server:resource name="validate" get="true"/>
         </coap-server:resources>
     </coap-server:config>
     
@@ -42,15 +46,11 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="TD_COAP_CORE_01/05/10 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 
 			<when expression="#[ flowVars.method == 'DELETE']">
                 <set-payload value="TD_COAP_CORE_02/06 received DELETE" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_02 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 
@@ -107,15 +107,11 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="TD_COAP_CORE_09/11/17 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_01 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 
 			<when expression="#[ flowVars.method == 'DELETE']">
                 <set-payload value="TD_COAP_CORE_02/06 received DELETE" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_02 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 
@@ -168,8 +164,6 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="TD_COAP_CORE_13 received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_13 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 			
@@ -197,8 +191,6 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
                 <set-payload value="TD_COAP_CORE_19 received POST: #[payload]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_19 response payload"/>
                 <set-property propertyName="coap.opt.location_query" value="first=1&amp;second=2" doc:name="set Location-Query"/>
                 <set-property propertyName="coap.response.code" value="CREATED" doc:name="CREATED"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 			
@@ -224,8 +216,6 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="TD_COAP_CORE_14 received GET with query: #[message.inboundProperties.'coap.opt.uri_query']" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_14 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 			
@@ -239,7 +229,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
     </flow>
     <!--  TODO : test composite source -->
     <flow name="coap-server-etsi-plugtest-location1-3">
-      	<coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/location1/*" doc:name="CoAP ETSI Plugtest listen /separate"/>
+      	<coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/location1/*" doc:name="CoAP ETSI Plugtest listen /location1/*"/>
         <logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
         
@@ -251,8 +241,6 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="TD_COAP_CORE_xx received GET." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_13 response payload"/>
-                <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
-                <logger level="INFO" doc:name="Logger"/>
 				
 			</when>
 			
@@ -261,6 +249,76 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
                 <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
 			</otherwise>
 		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow> 
+    
+    <flow name="coap-server-etsi-plugtest-multi-format">
+      	<coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/multi-format" doc:name="CoAP ETSI Plugtest listen /multi-format"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+		<set-variable variableName="accept" value="#[message.inboundProperties['coap.opt.accept'] ]"
+			doc:name="set accept"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.accept == 0 ]">
+                <set-payload value="TD_COAP_CORE_20 received GET for text/plain." encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_20 plain response payload"/>	
+			</when>			
+			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.accept == 41 ]">
+                <set-payload value="&lt;TD_COAP_CORE_20 received=&quot;GET&quot; accept=&quot;application/xml&quot;/&gt;" encoding="UTF-8" mimeType="application/xml" doc:name="TD_COAP_CORE_20 xml response payload"/>
+			</when>		
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    <flow name="coap-server-etsi-plugtest-validate">
+      	<coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/validate" doc:name="CoAP ETSI Plugtest listen /validate"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+		<set-variable variableName="etag" value="#[ message.inboundProperties.'coap.opt.etag.list' == empty ? null : message.inboundProperties.'coap.opt.etag.list'.getFirst()]"
+			doc:name="set etag"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.etag == empty ]">
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('validate_etag')]" doc:name="get actual etag"/>
+                <set-payload value="TD_COAP_CORE_21 received GET,  etag state is: #[flowVars.actual_etag.toString()]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_20 plain response payload"/>
+	
+			</when>			
+			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.etag != empty  ]">
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('validate_etag')]" doc:name="get actual etag"/>
+                <choice doc:name="check etag is valid">
+                    <when expression="#[flowVars.actual_etag.equals( flowVars.etag )]">
+                        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
+                        <set-property propertyName="coap.response.code" value="VALID" doc:name="set response code to Valid"/>
+                        <set-variable variableName="new_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('validate_etag')]" doc:name="set new etag for next call"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="TD_COAP_CORE_21 received GET,  etag state is: #[flowVars.actual_etag.toString()]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_20 plain response payload"/>
+                    </otherwise>
+                </choice>
+	
+			</when>		
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <set-property propertyName="coap.opt.etag.list" value="#[flowVars.actual_etag]" doc:name="set coap.opt.etag.list"/>
         <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>

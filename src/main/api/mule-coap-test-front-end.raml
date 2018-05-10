@@ -423,12 +423,77 @@ resourceTypes:
               An empty payload;
               
             Server sends response on third request containing:
-              Code = 69 (2.05 Content)
-              Option type = ETag
+              Code = 69 (2.05 Content);
+              Option type = ETag,
               Option value = an arbitrary ETag value which differs from
-              the ETag sent in first response.
+              the ETag sent in first response;
               The payload of the requested resource, which should be
-              different from the payload in first response.
+              different from the payload in first response;
 
 "
- 
+  /TD_COAP_CORE_22:
+    description: "Perform GET transaction with responses containing the ETag option and requests
+      containing the If-Match option (CON mode)
+
+      Server should offer a /validate resource.
+      Client & server supports ETag and If-Match option.
+      The Client ‘s cache must be purged."
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send a confirmable GET request to
+        server’s resource.
+        The first request sent request by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+
+        Client is requested to send a confirmable PUT request to
+        server’s resource so as to perform an atomic update.
+        The second request sent by the client contains:
+          Type = 0 (CON);
+          Code = 3 (PUT);
+          Option Type=If-Match,
+          Option value=ETag value received on first request;
+          An arbitrary payload (which differs from the payload
+          received on first request);
+          
+        Client is requested to send a confirmable GET request to
+        server’s resource.
+        The third request sent by the client contains:
+          Type = 0 (CON);
+          Code = 1 (GET);
+          
+        Update the content of the server’s resource from a CoAP
+        client. 
+        
+        Client is requested to send a confirmable PUT request to
+        server’s resource so as to perform an atomic update.
+        The fourth request sent by the client contains:
+          Type = 0 (CON);
+          Code = 3 (PUT);
+          Option Type=If-Match,
+          Option value=ETag value received received on third request;
+          An arbitrary payload (which differs from the previous
+          payloads);
+"
+      responses:
+        200:
+          description: "Server sends response on first request containing:
+              Code = 69 (2.05 content);
+              Option type = ETag, Option value = an arbitrary Etag value;
+              Not empty Payload;
+
+            Server sends response on second request containing:       
+              Code = 68 (2.04 Changed);
+              
+            Server sends response on third request containing:
+              Code = 69 (2.05 content);
+              Option type = ETag, Option value = an arbitrary Etag value which differs from
+              the ETag received on first request;
+              The Payload sent in second request;
+            
+            Server sends response on fourth request containing:       
+              Code = 140 (4.12 Precondition Failed);
+
+;
+
+"

@@ -27,6 +27,7 @@ import nl.teslanet.mule.transport.coap.commons.options.ETag;
 public class ETagMemoryStore
 {
 	private static ConcurrentSkipListMap<String, ETag> etags= new  ConcurrentSkipListMap<String, ETag>();
+	private static ConcurrentSkipListMap<String, String> payloads= new  ConcurrentSkipListMap<String, String>();
 	
 	
 	/**
@@ -67,5 +68,31 @@ public class ETagMemoryStore
 	    etags.put( key, new ETag( buffer.array()));
 
 		return etags.get(key);
+	}
+	
+	/**
+	 * Get payload that correlates to etag.
+	 * @param key The key of the etag.
+	 * @return the payload.
+	 */
+	public static String getPayload( String key )
+	{
+		if ( !payloads.containsKey(key))
+		{
+			payloads.put( key, "Payload for etag: " + etags.get(key) );
+		}
+		return payloads.get(key);
+	}
+	
+	/**
+	 * Set payload that correlates to etag.
+	 * @param key The key of the etag.
+	 * @return the payload that was set.
+	 */
+	public static String setPayload( String key, String payload )
+	{
+	    payloads.put( key, payload );
+
+		return payload;
 	}
 }

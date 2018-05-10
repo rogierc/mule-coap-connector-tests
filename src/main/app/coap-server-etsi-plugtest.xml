@@ -29,7 +29,7 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="large_create" get="true" post="true" size="2048"/>
             <coap-server:resource name="obs" get="true" observe="true"/>
             <coap-server:resource name="multi-format" get="true"/>
-            <coap-server:resource name="validate" get="true"/>
+            <coap-server:resource name="validate" get="true" put="true"/>
         </coap-server:resources>
     </coap-server:config>
     
@@ -292,11 +292,14 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 			doc:name="set uri"/>
 		<set-variable variableName="etag" value="#[ message.inboundProperties.'coap.opt.etag.list' == empty ? null : message.inboundProperties.'coap.opt.etag.list'.getFirst()]"
 			doc:name="set etag"/>
-
+		<set-variable variableName="if_match" value="#[ message.inboundProperties.'coap.opt.if_match.list' == empty ? null : message.inboundProperties.'coap.opt.if_match.list'.getFirst()]"
+			doc:name="set etag"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('validate_etag')]" doc:name="get actual etag"/>
+        <set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('validate_etag')]" doc:name="get actual payload"/>
+			
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.etag == empty ]">
-                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('validate_etag')]" doc:name="get actual etag"/>
-                <set-payload value="TD_COAP_CORE_21 received GET,  etag state is: #[flowVars.actual_etag.toString()]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_20 plain response payload"/>
+                <set-payload value="#[ flowVars.actual_payload]" encoding="UTF-8" mimeType="text/plain" doc:name="set response payload"/>
 	
 			</when>			
 			<when expression="#[ flowVars.method == 'GET' &amp;&amp; flowVars.etag != empty  ]">
@@ -308,11 +311,32 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
                         <set-variable variableName="new_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('validate_etag')]" doc:name="set new etag for next call"/>
                     </when>
                     <otherwise>
-                        <set-payload value="TD_COAP_CORE_21 received GET,  etag state is: #[flowVars.actual_etag.toString()]" encoding="UTF-8" mimeType="text/plain" doc:name="TD_COAP_CORE_20 plain response payload"/>
+                		<set-payload value="#[ flowVars.actual_payload]" encoding="UTF-8" mimeType="text/plain" doc:name="set response payload"/>
                     </otherwise>
                 </choice>
 	
 			</when>		
+			<when expression="#[ flowVars.method == 'PUT' &amp;&amp; flowVars.if_match == empty ]">
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('validate_etag')]" doc:name="get actual etag"/>
+        		<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('validate_etag', payload)]" doc:name="get actual payload"/>
+	
+			</when>			
+			<when expression="#[ flowVars.method == 'PUT' &amp;&amp; flowVars.if_match != empty  ]">
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('validate_etag')]" doc:name="get actual etag"/>
+                <choice doc:name="check if_match">
+                    <when expression="#[flowVars.if_match.equals( flowVars.actual_etag )]">
+                        <set-property propertyName="coap.response.code" value="CHANGED" doc:name="set response code to Valid"/>
+		                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('validate_etag')]" doc:name="get actual etag"/>
+		        		<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('validate_etag', payload)]" doc:name="get actual payload"/>
+                        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
+                    </when>
+                    <otherwise>
+                        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
+                        <set-property propertyName="coap.response.code" value="PRECONDITION_FAILED" doc:name="set response code to PRECONDITION_FAILED"/>
+                    </otherwise>
+                </choice>
+	
+			</when>				
 			<otherwise>
                 <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
                 <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				

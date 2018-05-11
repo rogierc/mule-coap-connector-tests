@@ -462,6 +462,39 @@ etag 4: #[flowVars.etag4] ;
 response 1: #[flowVars.response1] ;  
 response 2: #[flowVars.response2] ;  
 response 3: #[flowVars.response3] ; 
-response 4: #[flowVars.response4] ; " doc:name="Set Payload"/>       
-    </sub-flow >
+response 4: #[flowVars.response4] ; " doc:name="Set Payload"/>
+ 
+    </sub-flow>
+    
+    <sub-flow name="coap-client-etsi-plugtest-TD_COAP_CORE_23">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/>
+        <coap-client:delete config-ref="ETSI-Plugtest_Client" path="/create1" doc:name="CoAP Delete /create1, cleanup - just to be sure" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <logger level="INFO" doc:name="Logger"/>
+
+        <set-variable variableName="request1" value="TD_COAP_CORE_23a" doc:name="save response1"/>        
+        <set-payload value="#[flowVars.request1]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+        <set-property propertyName="coap.opt.if_none_match" value="true" doc:name="coap.opt.if_none_match"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:put config-ref="ETSI-Plugtest_Client" path="/create1" doc:name="CoAP Put /create1" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+       	<logger level="INFO" doc:name="Logger"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is not CREATED" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '2.01' ]" doc:name="Validation coap.response.code"/>
+
+        <set-variable variableName="request2" value="TD_COAP_CORE_23b" doc:name="save response2"/>        
+        <set-payload value="#[flowVars.request2]" doc:name="Set Payload" />
+        <set-property propertyName="coap.opt.if_none_match" value="true" doc:name="coap.opt.if_none_match"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:put config-ref="ETSI-Plugtest_Client" path="/create1" doc:name="CoAP Put /create1" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+       	<logger level="INFO" doc:name="Logger"/>
+        <validation:is-false config-ref="Validation_Configuration" message="CoAP result shold be failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-true config-ref="Validation_Configuration" 
+        	message="CoAP response code is PRECONDITION_FAILED" 
+        	expression="#[message.inboundProperties.'coap.response.code' == '4.12' ]" doc:name="Validation coap.response.code"/>
+        
+        <set-payload value="Test OK" doc:name="Set Payload"/>       
+    </sub-flow>
 </mule>

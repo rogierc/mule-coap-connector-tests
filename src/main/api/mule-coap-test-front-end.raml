@@ -492,8 +492,33 @@ resourceTypes:
               The Payload sent in second request;
             
             Server sends response on fourth request containing:       
-              Code = 140 (4.12 Precondition Failed);
+              Code = 140 (4.12 Precondition Failed);"
+              
+  /TD_COAP_CORE_23:
+    description: "Perform PUT transaction containing the If-None-Match option (CON mode)
+      Server should offer a /create1 resource, which does not exist and which can be
+      created by the client. Client & server supports If-Non-Match"
+    type: etsi-plugtest
+    get:
+      description: "Client is requested to send a confirmable PUT request to
+        server’s resource so as to atomically create the resource.
+        The first request sent request by the client contains:
+          Type = 0 (CON);
+          Code = 3 (PUT);
+          Option Type=If-None-Match;
+          An arbitrary payload;
 
-;
+        Client displays the response and the server created a new
+        resource.
+        The second request sent by the client contains:
+          Type = 0 (CON)
+          Code = 3 (PUT);
+          Option Type=If-None-Match;
+          An arbitrary payload;"
+      responses:
+        200:
+          description: "Server sends response on first request containing:
+            Code = 65 (2.01 Created);
 
-"
+            Server sends response on second request containing:       
+              Code = 140 (4.12 Precondition Failed);"

@@ -66,6 +66,15 @@ resourceTypes:
     See ETSI CTI Plugtests Guide V0.0.13 (2012-11)
     https://portal.etsi.org/cti/downloads/TestSpecifications/CoAP_2_Plugtests_TestDescriptions_v013.pdf"
    
+  /all:
+    description: Perform all ETSI plugtests.
+    type: etsi-plugtest
+    get:
+      description: "Request all tests"
+      responses:
+        200:
+          description: "collected results of the tests"
+
   /TD_COAP_CORE_01:
     description: Perform GET transaction (CON mode)
     type: etsi-plugtest

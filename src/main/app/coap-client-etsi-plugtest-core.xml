@@ -97,6 +97,12 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_23" doc:name="TD_COAP_CORE_23"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_CORE_23: ' + payload ]" doc:name="Variable"/>
 
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_01" doc:name="TD_COAP_LINK_01"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_01: ' + payload ]" doc:name="Variable"/>
+        
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_02" doc:name="TD_COAP_LINK_02"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_02: ' + payload ]" doc:name="Variable"/>
+
         <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
     </sub-flow >
     

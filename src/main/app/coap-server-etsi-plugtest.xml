@@ -24,13 +24,16 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="location-query" post="true" />
             <coap-server:resource name="query" get="true"/>
             <coap-server:resource name="separate" get="true" earlyAck="true"/>
-            <coap-server:resource name="large" get="true" size="2048"/>
-            <coap-server:resource name="large_update" get="true" put="true" size="2048"/>
-            <coap-server:resource name="large_create" get="true" post="true" size="2048"/>
-            <coap-server:resource name="obs" get="true" observe="true"/>
+            <coap-server:resource name="large" get="true" sz="2048"/>
+            <coap-server:resource name="large_update" get="true" put="true" sz="2048"/>
+            <coap-server:resource name="large_create" get="true" post="true" sz="2048"/>
             <coap-server:resource name="multi-format" get="true"/>
             <coap-server:resource name="validate" get="true" put="true"/>
             <coap-server:resource name="create1" get="true" put="true" delete="true"/>
+            <coap-server:resource name="link2" get="true" ifdesc="noop" rt="Type2, Type3"/>
+            <coap-server:resource name="link1" ifdesc="noop" rt="Type1, Type2"/>
+            <coap-server:resource name="link3" ifdesc="noop" rt="Type1, Type3"/>
+            <coap-server:resource name="obs" get="true" observable="true"/>
         </coap-server:resources>
     </coap-server:config>
     

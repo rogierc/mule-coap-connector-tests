@@ -39,90 +39,120 @@
         <apikit:router config-ref="Router" doc:name="API Router" />
         <exception-strategy ref="ExceptionMapping" doc:name="Reference Exception Strategy" />
     </flow>
-    
     <flow name="get:/etsi-plugtest/all:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-all" doc:name="Flow Reference" />
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-all" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_01:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_01_10" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_01:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_01_10" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_02:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_02" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_02:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_02" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_03:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_03" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_03:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_03" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_04:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_04" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_04:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_04" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_05:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_05" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_05:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_05" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_06:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_06" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_06:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_06" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_07:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_07" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_07:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_07" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_08:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_08" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_08:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_08" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_09:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_09_11" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_09:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_09_11" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_10:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_01_10" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_10:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_01_10" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_11:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_09_11" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_11:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_09_11" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_13:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_13" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_13:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_13" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_14:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_14" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_14:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_14" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_17:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_17" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_17:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_17" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_18:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_18" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_18:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_18" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_19:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_19" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_19:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_19" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_20:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_20" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_20:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_20" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_21:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_21" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_21:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_21" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_22:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_22" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_22:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_22" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    <flow name="get:/etsi-plugtest/TD_COAP_CORE_23:Router">
-        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params"/><flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_23" doc:name="Flow Reference" />
+    <flow name="get:/etsi-plugtest/core/TD_COAP_CORE_23:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_23" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-
+    <flow name="get:/etsi-plugtest/link/TD_COAP_LINK_01:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_01" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/link/TD_COAP_LINK_02:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_02" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
 </mule>

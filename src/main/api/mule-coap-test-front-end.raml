@@ -74,460 +74,494 @@ resourceTypes:
       responses:
         200:
           description: "collected results of the tests"
-
-  /TD_COAP_CORE_01:
-    description: Perform GET transaction (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a GET request with:
-        Type = 0(CON)
-        Code = 1(GET)"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 69(2.05 Content)
-            The same Message ID as that of the request sent by the client
-            Content format option"
-           
-  /TD_COAP_CORE_02:
-    description: Perform DELETE transaction (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a DELETE request with:
-        Type = 0(CON)
-        Code = 4(DELETE)"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 66(2.02 Deleted)
-            The same Message ID as that of the request sent by the
-            client"
-
-  /TD_COAP_CORE_03:
-    description: Perform PUT transaction (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a PUT request with:
-        Type = 0(CON)
-        Code = 3(PUT)
-        An arbitrary payload
-        Content format option"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 68 (2.04 Changed) or 65 (2.01 Created)
-            The same Message ID as that of the request sent by the
-            client"
-
-  /TD_COAP_CORE_04:
-    description: Perform POST transaction (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a POST request with:
-        Type = 0(CON)
-        Code = 2(POST)
-        An arbitrary payload
-        Content format option"
-      responses:
-        200:
-          description: "Server displays received information
-            Server sends response containing:
-            Code = 65(2.01 Created) or 68 (2.04 changed)
-            The same Message ID as that of the request sent by the
-            client"
-           
-  /TD_COAP_CORE_05:
-    description: Perform GET transaction (NON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a GET request with:
-        Type = 1(NON)
-        Code = 1(GET)"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Type = 1(NON)
-            Code= 69(2.05 Content)
-            Content format option"
-           
-  /TD_COAP_CORE_06:
-    description: Perform DELETE transaction (NON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a DELETE request with:
-        Type = 1(NON)
-        Code = 4(DELETE)"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Type = 1(NON)
-            Code = 66(2.02 Deleted)"
-
-  /TD_COAP_CORE_07:
-    description: Perform PUT transaction (NON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a PUT request with:
-        Type = 1(NON)
-        Code = 3(PUT)
-        An arbitrary payload
-        Content format option"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Type = 1(NON)
-            Code = 68 (2.04 Changed) or 65 (2.01 Created)"
-
-  /TD_COAP_CORE_08:
-    description: Perform POST transaction (NON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a POST request with:
-        Type = 1(NON)
-        Code = 2(POST)
-        An arbitrary payload
-        Content format option"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Type = 1(NON)
-            Code = 65(2.01 Created) or 68 (2.04 changed)"
-           
-  /TD_COAP_CORE_09:
-    description: Perform GET transaction with separate response (CON mode, no piggyback)
-    type: etsi-plugtest
-    get:
-      description: "The request sent by the client contains:
-        Type = 0 (CON)
-        Code = 1 (GET)
-        Client generated Message ID"
-      responses:
-        200:
-          description: "Server sends response containing:
-              Type = 2 (ACK)
-              Code = 0
-              Same message ID as in the request sent by the client
-              empty Payload
-            Server sends response containing:
-              Type = 0 (CON)
+  /core:
+    description: Test core CoAP features.
+    /TD_COAP_CORE_01:
+      description: Perform GET transaction (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a GET request with:
+          Type = 0(CON)
+          Code = 1(GET)"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 69(2.05 Content)
+              The same Message ID as that of the request sent by the client
+              Content format option"
+             
+    /TD_COAP_CORE_02:
+      description: Perform DELETE transaction (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a DELETE request with:
+          Type = 0(CON)
+          Code = 4(DELETE)"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 66(2.02 Deleted)
+              The same Message ID as that of the request sent by the
+              client"
+  
+    /TD_COAP_CORE_03:
+      description: Perform PUT transaction (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a PUT request with:
+          Type = 0(CON)
+          Code = 3(PUT)
+          An arbitrary payload
+          Content format option"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 68 (2.04 Changed) or 65 (2.01 Created)
+              The same Message ID as that of the request sent by the
+              client"
+  
+    /TD_COAP_CORE_04:
+      description: Perform POST transaction (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a POST request with:
+          Type = 0(CON)
+          Code = 2(POST)
+          An arbitrary payload
+          Content format option"
+        responses:
+          200:
+            description: "Server displays received information
+              Server sends response containing:
+              Code = 65(2.01 Created) or 68 (2.04 changed)
+              The same Message ID as that of the request sent by the
+              client"
+             
+    /TD_COAP_CORE_05:
+      description: Perform GET transaction (NON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a GET request with:
+          Type = 1(NON)
+          Code = 1(GET)"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Type = 1(NON)
+              Code= 69(2.05 Content)
+              Content format option"
+             
+    /TD_COAP_CORE_06:
+      description: Perform DELETE transaction (NON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a DELETE request with:
+          Type = 1(NON)
+          Code = 4(DELETE)"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Type = 1(NON)
+              Code = 66(2.02 Deleted)"
+  
+    /TD_COAP_CORE_07:
+      description: Perform PUT transaction (NON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a PUT request with:
+          Type = 1(NON)
+          Code = 3(PUT)
+          An arbitrary payload
+          Content format option"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Type = 1(NON)
+              Code = 68 (2.04 Changed) or 65 (2.01 Created)"
+  
+    /TD_COAP_CORE_08:
+      description: Perform POST transaction (NON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a POST request with:
+          Type = 1(NON)
+          Code = 2(POST)
+          An arbitrary payload
+          Content format option"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Type = 1(NON)
+              Code = 65(2.01 Created) or 68 (2.04 changed)"
+             
+    /TD_COAP_CORE_09:
+      description: Perform GET transaction with separate response (CON mode, no piggyback)
+      type: etsi-plugtest
+      get:
+        description: "The request sent by the client contains:
+          Type = 0 (CON)
+          Code = 1 (GET)
+          Client generated Message ID"
+        responses:
+          200:
+            description: "Server sends response containing:
+                Type = 2 (ACK)
+                Code = 0
+                Same message ID as in the request sent by the client
+                empty Payload
+              Server sends response containing:
+                Type = 0 (CON)
+                Code = 69 (2.05 content)
+                Server generated Message ID
+                Not empty Payload Content format option
+              Client sends response containing:
+                Type = 2 (ACK)
+                Code = 0
+                Same message ID as in the response sent by the server in step 4
+                empty Payload"
+             
+    /TD_COAP_CORE_10:
+      description: Perform GET transaction containing Token option (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a GET request to server’s resource including Token option
+          The request sent by the client contains:
+            Type = 0 (CON)
+            Code = 1 (GET)
+            Option Type = Token
+            Token value = a value generated by the client
+            Length of the token should be between 1 to 8 B"
+        responses:
+          200:
+            description: "Server sends response containing:
               Code = 69 (2.05 content)
-              Server generated Message ID
-              Not empty Payload Content format option
-            Client sends response containing:
-              Type = 2 (ACK)
-              Code = 0
-              Same message ID as in the response sent by the server in step 4
-              empty Payload"
-           
-  /TD_COAP_CORE_10:
-    description: Perform GET transaction containing Token option (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a GET request to server’s resource including Token option
-        The request sent by the client contains:
+              Length of the token should be between 1 to 8 B
+              Token = the same value as in the request sent by the client
+              Not empty Payload
+              Content format option"
+  
+    /TD_COAP_CORE_11:
+      description: Perform GET transaction containing token option with a separate response (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "The request sent by the client contains:
           Type = 0 (CON)
           Code = 1 (GET)
           Option Type = Token
-          Token value = a value generated by the client
-          Length of the token should be between 1 to 8 B"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 69 (2.05 content)
-            Length of the token should be between 1 to 8 B
-            Token = the same value as in the request sent by the client
-            Not empty Payload
-            Content format option"
-
-  /TD_COAP_CORE_11:
-    description: Perform GET transaction containing token option with a separate response (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "The request sent by the client contains:
-        Type = 0 (CON)
-        Code = 1 (GET)
-        Option Type = Token
-        Token value = a value generated by the client.
-        Length of the token should be between 1 to 8 B."
-      responses:
-        200:
-          description: "Server sends acknowledgement containing:
-              Type = 2 (ACK)
-              Code = 0 (Empty)
-              same Message-Id as in step 2
-              empty Payload
-            Server sends response containing:
-              Type = 0 (CON)
-              Code = 69 (2.05 content)
-              Length of the token should be between 1 to 8 B"
-
-  /TD_COAP_CORE_13:
-    description: Perform GET transaction containing several URI-Path options (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable GET request to
-        server’s resource
-        The request sent by the client contains:
-        Type = 0 (CON)
-        Code = 1 (GET)
-        Option type = URI-Path (one for each path segment), not
-        containing ‘/’ symbol"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 69 (2.05 content);
-            Not empty Payload;
-            Content format option;"
-     
-  /TD_COAP_CORE_14:
-    description: Perform GET transaction containing several URI-Query options (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable GET request with
-        three Query parameters (e.g. ?first=1&second=2&third=3) to
-        the server’s resource
-        The request sent by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET)
-          Option type = URI-Query (More than one query parameter);"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Type = 0 (CON) or 2 (ACK);
-            Code = 69 (2.05 content)
-            Not empty Payload Content format option;"
-     
-  /TD_COAP_CORE_17:
-    description: Perform GET transaction with a separate response (NON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a non-confirmablserver’s resource
-        The request sent by the client contains:
-        Type = 1 (NON);
-        Code = 1 (GET);
-        A message ID generated by the Client;"
-      responses:
-        200:
-          description: "Server DOES NOT send response containing:
-            Type = 2 (ACK);
-            Same message ID as in the request in step 2;
-            empty Payload;
-          Server sends response containing:
-            Type = 1 (NON);
-            Code = 69 (2.05 content);
-            Not empty Payload;
-            Content format option;"
-     
-  /TD_COAP_CORE_18:
-    description: Perform POST transaction with responses containing 
-      several Location-Path options (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable POST request to
-        server’s resource. The request sent by the client contains:
-          Type = 0 (CON);
-          Code = 2 (POST);
-          An arbitrary payload;
-          Content-format option;"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 65 (2.01 created);
-            Option type = Location-Path (one for each segment);
-            Option values must contain 
-            'location1', 'location2' & 'location3' without containing any ‘/’;"
-
-  /TD_COAP_CORE_19:
-    description: Perform POST transaction with responses containing several Location-Query options
-      (CON mode)
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable POST request to
-        server’s resource  /location-query.
-        The request sent by the client contains:
-          Type = 0 (CON);
-          Code = 2 (POST);
-          An arbitrary payload;
-          Content-format option;"
-      responses:
-        200:
-          description: "Server sends response containing:
-            Code = 65 (2.01 created);
-            Two options whose type is Location-Query;
-            The first option contains first=1 ;
-            The second option contains second=2 ;"
-
-  /TD_COAP_CORE_20:
-    description: "Perform GET transaction containing the Accept option (CON mode)
-      (CON mode). Server should provide a resource /multi-format which exists in two formats:
-      - text/plain;charset=utf-8;
-      - application/xml;"
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send two confirmable GET requests to
-        server’s resource
-        The first request sent request by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-          Option: type = Accept, value = 0 (text/plain;charset=utf-8);
-        The second request sent by the client contains:
-           Type = 0 (CON);
-           Code = 1 (GET);
-           Option: type = Accept, value = 41 (application/xml);"
-      responses:
-        200:
-          description: "Server sends response on first request containing:
-              Code = 69 (2.05 content);
-              Option type = Content-Format, value = 0 (text/plain;charset=utf-8);
-              Payload = Content of the requested resource in text/plain;charset=utf-8 format;
-            Server sends response on second request containing:       
-              Code = 69 (2.05 content);
-              Option: type = Content-Format, value = 41 (application/xml);
-              Payload = Content of the requested resource in application/xml format;"
-
-  /TD_COAP_CORE_21:
-    description: "Perform GET transaction containing the ETag option (CON mode)
-      Server should offer a /validate resource which vary in time;
-      Client & server supports ETag option;
-      The Client ‘s cache must be purged;"
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable GET request to
-        server’s resource
-
-        The first request sent request by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-          No ETag option
-
-        Client is requested to send confirmable GET request to
-        server’s resource so as to check if the resource was updated.
-        The second request sent by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-          Option Type=ETag;
-          Option value=the ETag value received on first request
-          
-        Update the content of the server’s resource from a CoAP
-        client.
-        Client is requested to send a confirmable GET request to
-        server’s resource so as to check if the resource was updated
-        The third request sent by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-          Option Type=ETag;
-          Option value=the ETag value received on first request."
-      responses:
-        200:
-          description: "Server sends response on first request containing:
-              Code = 69 (2.05 content);
-              Option type = ETag;
-              Option value = an arbitrary ETag value;
-              Not empty Payload;
-
-            Server sends response on second request containing:       
-              Code = 67 (2.03 Valid);
-              Option type = ETag;
-              Option value = the ETag value sent in first response;
-              An empty payload;
-              
-            Server sends response on third request containing:
-              Code = 69 (2.05 Content);
-              Option type = ETag,
-              Option value = an arbitrary ETag value which differs from
-              the ETag sent in first response;
-              The payload of the requested resource, which should be
-              different from the payload in first response;
-
-"
-  /TD_COAP_CORE_22:
-    description: "Perform GET transaction with responses containing the ETag option and requests
-      containing the If-Match option (CON mode)
-
-      Server should offer a /validate resource.
-      Client & server supports ETag and If-Match option.
-      The Client ‘s cache must be purged."
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable GET request to
-        server’s resource.
-        The first request sent request by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-
-        Client is requested to send a confirmable PUT request to
-        server’s resource so as to perform an atomic update.
-        The second request sent by the client contains:
-          Type = 0 (CON);
-          Code = 3 (PUT);
-          Option Type=If-Match,
-          Option value=ETag value received on first request;
-          An arbitrary payload (which differs from the payload
-          received on first request);
-          
-        Client is requested to send a confirmable GET request to
-        server’s resource.
-        The third request sent by the client contains:
-          Type = 0 (CON);
-          Code = 1 (GET);
-          
-        Update the content of the server’s resource from a CoAP
-        client. 
-        
-        Client is requested to send a confirmable PUT request to
-        server’s resource so as to perform an atomic update.
-        The fourth request sent by the client contains:
-          Type = 0 (CON);
-          Code = 3 (PUT);
-          Option Type=If-Match,
-          Option value=ETag value received received on third request;
-          An arbitrary payload (which differs from the previous
-          payloads);
-"
-      responses:
-        200:
-          description: "Server sends response on first request containing:
-              Code = 69 (2.05 content);
-              Option type = ETag, Option value = an arbitrary Etag value;
-              Not empty Payload;
-
-            Server sends response on second request containing:       
-              Code = 68 (2.04 Changed);
-              
-            Server sends response on third request containing:
-              Code = 69 (2.05 content);
-              Option type = ETag, Option value = an arbitrary Etag value which differs from
-              the ETag received on first request;
-              The Payload sent in second request;
-            
-            Server sends response on fourth request containing:       
-              Code = 140 (4.12 Precondition Failed);"
-              
-  /TD_COAP_CORE_23:
-    description: "Perform PUT transaction containing the If-None-Match option (CON mode)
-      Server should offer a /create1 resource, which does not exist and which can be
-      created by the client. Client & server supports If-Non-Match"
-    type: etsi-plugtest
-    get:
-      description: "Client is requested to send a confirmable PUT request to
-        server’s resource so as to atomically create the resource.
-        The first request sent request by the client contains:
-          Type = 0 (CON);
-          Code = 3 (PUT);
-          Option Type=If-None-Match;
-          An arbitrary payload;
-
-        Client displays the response and the server created a new
-        resource.
-        The second request sent by the client contains:
+          Token value = a value generated by the client.
+          Length of the token should be between 1 to 8 B."
+        responses:
+          200:
+            description: "Server sends acknowledgement containing:
+                Type = 2 (ACK)
+                Code = 0 (Empty)
+                same Message-Id as in step 2
+                empty Payload
+              Server sends response containing:
+                Type = 0 (CON)
+                Code = 69 (2.05 content)
+                Length of the token should be between 1 to 8 B"
+  
+    /TD_COAP_CORE_13:
+      description: Perform GET transaction containing several URI-Path options (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable GET request to
+          server’s resource
+          The request sent by the client contains:
           Type = 0 (CON)
-          Code = 3 (PUT);
-          Option Type=If-None-Match;
-          An arbitrary payload;"
-      responses:
-        200:
-          description: "Server sends response on first request containing:
-            Code = 65 (2.01 Created);
-
-            Server sends response on second request containing:       
-              Code = 140 (4.12 Precondition Failed);"
+          Code = 1 (GET)
+          Option type = URI-Path (one for each path segment), not
+          containing ‘/’ symbol"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 69 (2.05 content);
+              Not empty Payload;
+              Content format option;"
+       
+    /TD_COAP_CORE_14:
+      description: Perform GET transaction containing several URI-Query options (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable GET request with
+          three Query parameters (e.g. ?first=1&second=2&third=3) to
+          the server’s resource
+          The request sent by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET)
+            Option type = URI-Query (More than one query parameter);"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Type = 0 (CON) or 2 (ACK);
+              Code = 69 (2.05 content)
+              Not empty Payload Content format option;"
+       
+    /TD_COAP_CORE_17:
+      description: Perform GET transaction with a separate response (NON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a non-confirmablserver’s resource
+          The request sent by the client contains:
+          Type = 1 (NON);
+          Code = 1 (GET);
+          A message ID generated by the Client;"
+        responses:
+          200:
+            description: "Server DOES NOT send response containing:
+              Type = 2 (ACK);
+              Same message ID as in the request in step 2;
+              empty Payload;
+            Server sends response containing:
+              Type = 1 (NON);
+              Code = 69 (2.05 content);
+              Not empty Payload;
+              Content format option;"
+       
+    /TD_COAP_CORE_18:
+      description: Perform POST transaction with responses containing 
+        several Location-Path options (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable POST request to
+          server’s resource. The request sent by the client contains:
+            Type = 0 (CON);
+            Code = 2 (POST);
+            An arbitrary payload;
+            Content-format option;"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 65 (2.01 created);
+              Option type = Location-Path (one for each segment);
+              Option values must contain 
+              'location1', 'location2' & 'location3' without containing any ‘/’;"
+  
+    /TD_COAP_CORE_19:
+      description: Perform POST transaction with responses containing several Location-Query options
+        (CON mode)
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable POST request to
+          server’s resource  /location-query.
+          The request sent by the client contains:
+            Type = 0 (CON);
+            Code = 2 (POST);
+            An arbitrary payload;
+            Content-format option;"
+        responses:
+          200:
+            description: "Server sends response containing:
+              Code = 65 (2.01 created);
+              Two options whose type is Location-Query;
+              The first option contains first=1 ;
+              The second option contains second=2 ;"
+  
+    /TD_COAP_CORE_20:
+      description: "Perform GET transaction containing the Accept option (CON mode)
+        (CON mode). Server should provide a resource /multi-format which exists in two formats:
+        - text/plain;charset=utf-8;
+        - application/xml;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send two confirmable GET requests to
+          server’s resource
+          The first request sent request by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+            Option: type = Accept, value = 0 (text/plain;charset=utf-8);
+          The second request sent by the client contains:
+             Type = 0 (CON);
+             Code = 1 (GET);
+             Option: type = Accept, value = 41 (application/xml);"
+        responses:
+          200:
+            description: "Server sends response on first request containing:
+                Code = 69 (2.05 content);
+                Option type = Content-Format, value = 0 (text/plain;charset=utf-8);
+                Payload = Content of the requested resource in text/plain;charset=utf-8 format;
+              Server sends response on second request containing:       
+                Code = 69 (2.05 content);
+                Option: type = Content-Format, value = 41 (application/xml);
+                Payload = Content of the requested resource in application/xml format;"
+  
+    /TD_COAP_CORE_21:
+      description: "Perform GET transaction containing the ETag option (CON mode)
+        Server should offer a /validate resource which vary in time;
+        Client & server supports ETag option;
+        The Client ‘s cache must be purged;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable GET request to
+          server’s resource
+  
+          The first request sent request by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+            No ETag option
+  
+          Client is requested to send confirmable GET request to
+          server’s resource so as to check if the resource was updated.
+          The second request sent by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+            Option Type=ETag;
+            Option value=the ETag value received on first request
+            
+          Update the content of the server’s resource from a CoAP
+          client.
+          Client is requested to send a confirmable GET request to
+          server’s resource so as to check if the resource was updated
+          The third request sent by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+            Option Type=ETag;
+            Option value=the ETag value received on first request."
+        responses:
+          200:
+            description: "Server sends response on first request containing:
+                Code = 69 (2.05 content);
+                Option type = ETag;
+                Option value = an arbitrary ETag value;
+                Not empty Payload;
+  
+              Server sends response on second request containing:       
+                Code = 67 (2.03 Valid);
+                Option type = ETag;
+                Option value = the ETag value sent in first response;
+                An empty payload;
+                
+              Server sends response on third request containing:
+                Code = 69 (2.05 Content);
+                Option type = ETag,
+                Option value = an arbitrary ETag value which differs from
+                the ETag sent in first response;
+                The payload of the requested resource, which should be
+                different from the payload in first response;
+  
+  "
+    /TD_COAP_CORE_22:
+      description: "Perform GET transaction with responses containing the ETag option and requests
+        containing the If-Match option (CON mode)
+  
+        Server should offer a /validate resource.
+        Client & server supports ETag and If-Match option.
+        The Client ‘s cache must be purged."
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable GET request to
+          server’s resource.
+          The first request sent request by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+  
+          Client is requested to send a confirmable PUT request to
+          server’s resource so as to perform an atomic update.
+          The second request sent by the client contains:
+            Type = 0 (CON);
+            Code = 3 (PUT);
+            Option Type=If-Match,
+            Option value=ETag value received on first request;
+            An arbitrary payload (which differs from the payload
+            received on first request);
+            
+          Client is requested to send a confirmable GET request to
+          server’s resource.
+          The third request sent by the client contains:
+            Type = 0 (CON);
+            Code = 1 (GET);
+            
+          Update the content of the server’s resource from a CoAP
+          client. 
+          
+          Client is requested to send a confirmable PUT request to
+          server’s resource so as to perform an atomic update.
+          The fourth request sent by the client contains:
+            Type = 0 (CON);
+            Code = 3 (PUT);
+            Option Type=If-Match,
+            Option value=ETag value received received on third request;
+            An arbitrary payload (which differs from the previous
+            payloads);
+  "
+        responses:
+          200:
+            description: "Server sends response on first request containing:
+                Code = 69 (2.05 content);
+                Option type = ETag, Option value = an arbitrary Etag value;
+                Not empty Payload;
+  
+              Server sends response on second request containing:       
+                Code = 68 (2.04 Changed);
+                
+              Server sends response on third request containing:
+                Code = 69 (2.05 content);
+                Option type = ETag, Option value = an arbitrary Etag value which differs from
+                the ETag received on first request;
+                The Payload sent in second request;
+              
+              Server sends response on fourth request containing:       
+                Code = 140 (4.12 Precondition Failed);"
+                
+    /TD_COAP_CORE_23:
+      description: "Perform PUT transaction containing the If-None-Match option (CON mode)
+        Server should offer a /create1 resource, which does not exist and which can be
+        created by the client. Client & server supports If-Non-Match"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send a confirmable PUT request to
+          server’s resource so as to atomically create the resource.
+          The first request sent request by the client contains:
+            Type = 0 (CON);
+            Code = 3 (PUT);
+            Option Type=If-None-Match;
+            An arbitrary payload;
+  
+          Client displays the response and the server created a new
+          resource.
+          The second request sent by the client contains:
+            Type = 0 (CON)
+            Code = 3 (PUT);
+            Option Type=If-None-Match;
+            An arbitrary payload;"
+        responses:
+          200:
+            description: "Server sends response on first request containing:
+              Code = 65 (2.01 Created);
+  
+              Server sends response on second request containing:       
+                Code = 140 (4.12 Precondition Failed);"
+  /link:
+    description: Test support of CoRE Link Format.
+    /TD_COAP_LINK_01:
+      description: "Access to well-known interface for resource discovery.
+        Client and server supports CoRE Link Format. 
+        Server supports /.well-known/core resource and the CoRE Link Format"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resource.
+          Client sends a GET request to Server for /.well-known/core resource."
+        responses:
+          200:
+            description: "Server sends response containing:
+              Content-format option indicating 40 (application/link-format);
+              Code indicating 69 (2.05 content);
+              Payload indicating all the links available on Server;"
+    /TD_COAP_LINK_02:
+      description: "Use filtered requests for limiting discovery results.
+        Client supports CoRE Link Format.
+        Server supports CoRE Link Format.
+        Server offers different types of resources."
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resource of a
+          specific type Type1. 
+          Client sends a GET request to Server for /.well-known/core
+          resource containing URI-Query indicating 'rt=Type1'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              Content- format option indicating 40 (application/link-format)
+              Payload indicating only the links of type Type1 available on
+              Server."

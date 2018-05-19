@@ -30,10 +30,10 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="multi-format" get="true"/>
             <coap-server:resource name="validate" get="true" put="true"/>
             <coap-server:resource name="create1" get="true" put="true" delete="true"/>
-            <coap-server:resource name="link2" get="true" ifdesc="noop" rt="Type2, Type3"/>
-            <coap-server:resource name="link1" ifdesc="noop" rt="Type1, Type2"/>
-            <coap-server:resource name="link3" ifdesc="noop" rt="Type1, Type3"/>
             <coap-server:resource name="obs" get="true" observable="true"/>
+            <coap-server:resource name="link1" title="Link test resource" ifdesc="If1" rt="Type1, Type2"/>
+            <coap-server:resource name="link3" title="Link test resource" ifdesc="foo" rt="Type1, Type3"/>
+            <coap-server:resource name="link2" title="Link test resource" ifdesc="If2" rt="Type2, Type3"/>
         </coap-server:resources>
     </coap-server:config>
     

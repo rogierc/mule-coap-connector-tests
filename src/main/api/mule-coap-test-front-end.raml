@@ -565,3 +565,99 @@ resourceTypes:
               Content- format option indicating 40 (application/link-format)
               Payload indicating only the links of type Type1 available on
               Server."
+    /TD_COAP_LINK_03:
+      description: "Handle empty prefix value strings.
+        Client supports Core Link Format;
+        Server supports Core Link Format;
+        Server offers different types of resources (Type1, Type2);
+        Server offers resources with no type (i.e. no rt attribute)."
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resources
+          matching an rt empty value.
+          Client sends a GET request to Server for /.well-known/core
+          esource containing URI-Query indicating rt='*'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              Content-format option indicating 40 (application/link-format);
+              Payload indicating only the links having an rt attribute.
+              Client displays the list of resources with rt attribute available
+              on Server."
+    /TD_COAP_LINK_04:
+      description: "Filter discovery results in presence of multiple rt attributes.
+        Client supports Core Link Format;
+        Server supports Core Link Format;
+        Server offers 4 groups of resources:
+        1. Resources with rt='Type1 Type2';
+        2. Resources with rt='Type2 Type3';
+        3. Resources with rt='Type1 Type3';
+        4. Resources with rt=''."
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resources of a specific type Type2.
+          Client sends a GET request to Server for /.well-known/core
+          resource containing URI-Query indicating rt='Type2'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              Content-format option indicating 40 (application/link-format);
+              Payload indicating only the links of groups 1 and 2;"
+
+    /TD_COAP_LINK_05:
+      description: "Filter discovery results using if attribute and prefix value strings
+        Client supports Core Link Format;
+        Server supports Core Link Format;
+        Server offers 4 groups of resources:
+        1. Resources with if='If1';
+        2. Resources with if='If2';
+        3. Resources with if='foo';
+        4. Resources with no if attribute;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resources
+          matching the interface description pattern 'If*'
+          Client sends a GET request to Server for /.well-known/core
+          resource containing URI-Query indicating if='If*'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              Content-format option indicating 40 (application/link-format);
+              Payload indicating only the links of groups 1 and 2;"
+
+    /TD_COAP_LINK_06:
+      description: "Filter discovery results using sz attribute and prefix value strings.
+        Client supports Core Link Format;
+        Server supports Core Link Format;
+        Server offers resource with sz attribute;
+        Server offers resources with no sz attribute;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve Server’s list of resources having
+          a sz attribute. Client sends a GET request to Server for /.well-known/core
+          resource containing URI-Query indicating sz='*'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              \n\tContent-format option indicating 40 (application/link-format);
+              \n\tPayload indicating only the links having a sz attribute;
+              \nClient displays the retrieved list of resources."
+          400:
+
+    /TD_COAP_LINK_07:
+      description: "Filter discovery results using href attribute and complete value strings.
+        \n- Client supports Core Link Format;
+        \n- Server supports Core Link Format;
+        \n- Server offers resources /link1 /link2 and /link3;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve the link-value anchored at /link1.
+          Client sends a GET request to Server for /.well-known/core 
+          resource containing URI-Query indicating href='/link1'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              \nContent-format option indicating 40 (application/link-format);
+              \nPayload indicating only the link for /link1.
+              \nClient displays the retrieved list of resources."
+

@@ -661,3 +661,41 @@ resourceTypes:
               \nPayload indicating only the link for /link1.
               \nClient displays the retrieved list of resources."
 
+    /TD_COAP_LINK_08:
+      description: "Filter discovery results using href attribute and prefix value strings.
+        \n- Client supports Core Link Format;
+        \n- Server supports Core Link Format;
+        \n- Server offers resources /link1 /link2 and /link3;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve the link-value anchored at /link*.
+          Client sends a GET request to Server for /.well-known/core
+          resource containing URI-Query indicating href='/link*'."
+        responses:
+          200:
+            description: "Server sends response containing:
+              \nContent-format option indicating 40 (application/link-format);
+              \nPayload indicating only the link matching /link* .
+              \nClient displays the retrieved list of resources."
+    /TD_COAP_LINK_09:
+      description: "Arrange link descriptions hierarchically.
+        Client supports Core Link Format
+        Server supports Core Link Format
+        Server offers an entry located at /path with ct=40
+        Server offers sub-resources /path/sub1, /path/sub2, ... (see Note)"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve one of the sub-resources.
+          \nClient sends 1st GET request to Server for /.well-known/core resource.
+          \nClient sends 2nd GET request for /path to Server
+          \nClient sends 3rd GET request for /path/sub1 ."          
+        responses:
+          200:
+            description: "Server sends response on 1st request containing:
+              \n Content-format option indicating 40 (application/link-format);
+              \n Payload indicating the link description for /path;
+              \nServer sends response on 2nd request containing:
+              \n Content-format option indicating 40 (application/link-format);
+              \n Payload indicating the link description for /path/sub1, /path/sub2, ... ;
+              \nServer sends 2.05 (Content) response on 3rd request, Payload contains /path/sub1
+              \nClient displays the retrieved sub-resource."

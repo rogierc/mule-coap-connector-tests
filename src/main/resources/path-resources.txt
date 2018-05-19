@@ -1,0 +1,1 @@
+</path/sub2>;title="Hierarchical link description sub-resource",</path/sub3>;title="Hierarchical link description sub-resource",</path/sub1>;title="Hierarchical link description sub-resource"

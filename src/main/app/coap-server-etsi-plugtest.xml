@@ -34,6 +34,13 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="link1" title="Link test resource" ifdesc="If1" rt="Type1, Type2"/>
             <coap-server:resource name="link3" title="Link test resource" ifdesc="foo" rt="Type1, Type3"/>
             <coap-server:resource name="link2" title="Link test resource" ifdesc="If2" rt="Type2, Type3"/>
+            <coap-server:resource name="path" get="true" title="Resource that contains subresources" ct="40">
+                <coap-server:resources>
+                    <coap-server:resource name="sub1" get="true" title="first sub resource" ct="0"/>
+                    <coap-server:resource name="sub3" get="true" title="third sub resource" ct="0"/>
+                    <coap-server:resource name="sub2" get="true" title="second sub resource" ct="0"/>
+                </coap-server:resources>
+            </coap-server:resource>
         </coap-server:resources>
     </coap-server:config>
     
@@ -422,12 +429,25 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
                 <coap-server:remove-resource config-ref="CoAP_ETSI_Plugtest_Server" uri="/create1" doc:name="Delete /create1"/>
 	
 			</when>				
+			<when expression="#[ flowVars.uri == '/path' &amp;&amp; flowVars.method == 'GET' ]">
+	            <set-payload value="#[NullPayload.getInstance()]" encoding="UTF-8" mimeType="application/link-format" doc:name="NullPayload"/>
+                <parse-template location="path-resources.txt" doc:name="Set response payload"/>            
+			</when>					
+			<when expression="#[ flowVars.uri == '/path/sub1' &amp;&amp; flowVars.method == 'GET' ]">
+	            <set-payload value="/path/sub1" encoding="UTF-8" mimeType="text/plain" doc:name="Set response payload"/>
+			</when>					
+			<when expression="#[ flowVars.uri == '/path/sub2' &amp;&amp; flowVars.method == 'GET' ]">
+	            <set-payload value="/path/sub2" encoding="UTF-8" mimeType="text/plain" doc:name="Set response payload"/>
+			</when>					
+			<when expression="#[ flowVars.uri == '/path/sub3' &amp;&amp; flowVars.method == 'GET' ]">
+	            <set-payload value="/path/sub3" encoding="UTF-8" mimeType="text/plain" doc:name="Set response payload"/>
+			</when>					
 			<otherwise>
                 <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
-                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
 			</otherwise>
 		</choice>
         <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
+    
 </mule>

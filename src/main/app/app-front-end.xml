@@ -180,4 +180,14 @@
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_07" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
+    <flow name="get:/etsi-plugtest/link/TD_COAP_LINK_08:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_08" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/link/TD_COAP_LINK_09:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
 </mule>

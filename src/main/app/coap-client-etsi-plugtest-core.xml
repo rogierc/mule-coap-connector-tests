@@ -103,6 +103,27 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_02" doc:name="TD_COAP_LINK_02"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_02: ' + payload ]" doc:name="Variable"/>
 
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_03" doc:name="TD_COAP_LINK_03"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_03: ' + payload ]" doc:name="Variable"/>
+        
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_04" doc:name="TD_COAP_LINK_04"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_04: ' + payload ]" doc:name="Variable"/>
+
+ 		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_05" doc:name="TD_COAP_LINK_05"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_05: ' + payload ]" doc:name="Variable"/>
+        
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_06" doc:name="TD_COAP_LINK_06"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_06: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_07" doc:name="TD_COAP_LINK_07"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_07: ' + payload ]" doc:name="Variable"/>
+        
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_08" doc:name="TD_COAP_LINK_08"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_08: ' + payload ]" doc:name="Variable"/>
+ 
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="TD_COAP_LINK_09"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_09: ' + payload ]" doc:name="Variable"/>
+ 
         <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
     </sub-flow >
     

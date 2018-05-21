@@ -25,8 +25,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="query" get="true"/>
             <coap-server:resource name="separate" get="true" earlyAck="true"/>
             <coap-server:resource name="large" get="true" sz="2048"/>
-            <coap-server:resource name="large_update" get="true" put="true" sz="2048"/>
-            <coap-server:resource name="large_create" get="true" post="true" sz="2048"/>
+            <coap-server:resource name="large-update"  put="true" sz="2048"/>
+            <coap-server:resource name="large-create" get="true" post="true" sz="2048"/>
             <coap-server:resource name="multi-format" get="true"/>
             <coap-server:resource name="validate" get="true" put="true"/>
             <coap-server:resource name="create1" get="true" put="true" delete="true"/>
@@ -397,18 +397,18 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
                 </choice>
 	
 			</when>		
-			<when expression="#[ flowVars.uri == '/create1' &amp;&amp; flowVars.method == 'PUT' &amp;&amp; flowVars.if_none_match == empty ]">
+			<when expression="#[ flowVars.uri == '/create1' &amp;&amp; flowVars.method == 'PUT' &amp;&amp; flowVars.if_none_match == false ]">
                 <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('create1_etag')]" doc:name="get actual etag"/>
         		<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('create1_etag', payload)]" doc:name="get actual payload"/>
                 <coap-server:add-resource config-ref="CoAP_ETSI_Plugtest_Server" uri="/create1" delete="true" get="true" put="true" doc:name="Add /create1"/>
 	
 			</when>			
-			<when expression="#[ flowVars.uri == '/create1' &amp;&amp; flowVars.method == 'PUT' &amp;&amp; flowVars.if_none_match != empty  ]">
+			<when expression="#[ flowVars.uri == '/create1' &amp;&amp; flowVars.method == 'PUT' &amp;&amp; flowVars.if_none_match == true ]">
                 <enricher target="#[flowVars.exists]" doc:name="Message Enricher">
                     <coap-server:resource-exists config-ref="CoAP_ETSI_Plugtest_Server" uri="/create1" doc:name="CoAP Server"/>
                 </enricher>
-                <choice doc:name="check if exist and if_none_match">
-                    <when expression="#[flowVars.exists == false || flowVars.if_none_match == false ]">
+                <choice doc:name="check if exist">
+                    <when expression="#[flowVars.exists == false ]">
                         <set-property propertyName="coap.response.code" value="CREATED" doc:name="set response code to CREATED"/>
 		                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('validate_etag')]" doc:name="get actual etag"/>
 		        		<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('validate_etag', payload)]" doc:name="get actual payload"/>
@@ -444,10 +444,80 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 			</when>					
 			<otherwise>
                 <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="PRECONDITION_FAILED" doc:name="set response code to PRECONDITION_FAILED"/>
 			</otherwise>
 		</choice>
         <logger message="#[payload]" level="INFO" doc:name="Log payload"/>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
+    
+    <flow name="coap-server-etsi-plugtest-large">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/large" doc:name="CoAP ETSI Plugtest listen /large"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="#[NullPayload.getInstance()]" encoding="UTF-8" mimeType="text/plain" doc:name="prime response"/>
+                <parse-template location="rfc7252.txt" doc:name="set large payload"/>				
+			</when>			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    <flow name="coap-server-etsi-plugtest-large-update">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/large-update" doc:name="CoAP ETSI Plugtest listen /large-update"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'PUT']">
+                <set-payload value="#[NullPayload.getInstance()]" doc:name="prime response"/>
+                <set-property propertyName="coap.response.code" value="CHANGED" doc:name="CHANGED"/>       				
+			</when>			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+       <flow name="coap-server-etsi-plugtest-large-create">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/large-create" doc:name="CoAP ETSI Plugtest listen /large-create"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'POST']">
+                <set-payload value="#[NullPayload.getInstance()]" doc:name="prime response"/>
+                <set-property propertyName="coap.response.code" value="CREATED" doc:name="CREATED"/>       				
+			</when>			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
     
 </mule>

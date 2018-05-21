@@ -1,0 +1,71 @@
+Internet Engineering Task Force (IETF)                         Z. Shelby
+Request for Comments: 7252                                           ARM
+Category: Standards Track                                      K. Hartke
+ISSN: 2070-1721                                               C. Bormann
+                                                 Universitaet Bremen TZI
+                                                               June 2014
+
+
+              The Constrained Application Protocol (CoAP)
+
+Abstract
+
+   The Constrained Application Protocol (CoAP) is a specialized web
+   transfer protocol for use with constrained nodes and constrained
+   (e.g., low-power, lossy) networks.  The nodes often have 8-bit
+   microcontrollers with small amounts of ROM and RAM, while constrained
+   networks such as IPv6 over Low-Power Wireless Personal Area Networks
+   (6LoWPANs) often have high packet error rates and a typical
+   throughput of 10s of kbit/s.  The protocol is designed for machine-
+   to-machine (M2M) applications such as smart energy and building
+   automation.
+
+   CoAP provides a request/response interaction model between
+   application endpoints, supports built-in discovery of services and
+   resources, and includes key concepts of the Web such as URIs and
+   Internet media types.  CoAP is designed to easily interface with HTTP
+   for integration with the Web while meeting specialized requirements
+   such as multicast support, very low overhead, and simplicity for
+   constrained environments.
+
+Status of This Memo
+
+   This is an Internet Standards Track document.
+
+   This document is a product of the Internet Engineering Task Force
+   (IETF).  It represents the consensus of the IETF community.  It has
+   received public review and has been approved for publication by the
+   Internet Engineering Steering Group (IESG).  Further information on
+   Internet Standards is available in Section 2 of RFC 5741.
+
+   Information about the current status of this document, any errata,
+   and how to provide feedback on it may be obtained at
+   http://www.rfc-editor.org/info/rfc7252.
+
+
+
+
+
+
+
+
+Shelby, et al.               Standards Track                    [Page 1]
+
+ 
+RFC 7252       The Constrained Application Protocol (CoAP)     June 2014
+
+
+Copyright Notice
+
+   Copyright (c) 2014 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents
+   (http://trustee.ietf.org/license-info) in effect on the date of
+   publication of this document.  Please review these documents
+   carefully, as they describe your rights and restrictions with respect
+   to this document.  Code Components extracted from this document must
+   include Simplified BSD License text as described in Section 4.e of
+   the Trust Legal Provisions and are provided without warranty as
+   described in the Simplified BSD License.

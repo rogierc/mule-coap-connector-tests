@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" 
+	xmlns="http://www.mulesoft.org/schema/mule/core" 
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd">
+	
+	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+		<set-property propertyName="coap.opt.block2.szx" value="1" doc:name="set coap.opt.block2.szx"/>
+		
+		<logger level="INFO" doc:name="Logger"/>
+		<coap-client:get config-ref="ETSI-Plugtest_Client" path="/large" doc:name="CoAP Get /large" host="#[flowVars.host]" port="#[flowVars.port]"/>
+		<logger level="INFO" doc:name="Logger"/>
+		
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CONTENT" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response content format is not text/plain" expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]" doc:name="Validation coap.opt.content_format"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP coap.opt.block2.szx shoud be 1" expression="#[message.inboundProperties.'coap.opt.block2.szx' == '1']" doc:name="Validation coap.opt.block2.szx"/>
+		<validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+		<set-payload value="Test OK: #[payload]
+			" doc:name="Set Payload"/>
+	</sub-flow>
+	
+
+	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_BLOCK_02">
+		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+		
+		<logger level="INFO" doc:name="Logger"/>
+		<coap-client:get config-ref="ETSI-Plugtest_Client" path="/large" doc:name="CoAP Get /large" host="#[flowVars.host]" port="#[flowVars.port]"/>
+		<logger level="INFO" doc:name="Logger"/>
+		
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CONTENT" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response content format is not text/plain" expression="#[message.inboundProperties.'coap.opt.content_format' == 0 ]" doc:name="Validation coap.opt.content_format"/>
+		<validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+		<set-payload value="Test OK: #[payload]
+			" doc:name="Set Payload"/>
+	</sub-flow>
+	
+	
+	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_BLOCK_03">
+		<set-payload value="#[NullPayload.getInstance()]" encoding="UTF-8" mimeType="text/plain" doc:name="prime request"/>
+		<set-property propertyName="coap.opt.block1.szx" value="1" doc:name="set coap.opt.block1.szx"/>
+		<parse-template location="rfc7252.txt" doc:name="set large payload"/>				
+		
+		<logger level="INFO" doc:name="Logger"/>
+		<coap-client:put config-ref="ETSI-Plugtest_Client_block32" path="/large-update" doc:name="CoAP Put /large-update" host="#[flowVars.host]" port="#[flowVars.port]"/>
+		<logger level="INFO" doc:name="Logger"/>
+		
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CHANGED" expression="#[message.inboundProperties.'coap.response.code' == '2.04']" doc:name="Validation coap.response.code"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP coap.opt.block1.szx shoud be 1" expression="#[message.inboundProperties.'coap.opt.block1.szx' == '1']" doc:name="Validation coap.opt.block2.szx"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+	</sub-flow>
+	
+		
+	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_BLOCK_04">
+		<set-payload value="#[NullPayload.getInstance()]" encoding="UTF-8" mimeType="text/plain" doc:name="prime request"/>
+		<set-property propertyName="coap.opt.block1.szx" value="1" doc:name="set coap.opt.block1.szx"/>
+		<parse-template location="rfc7252.txt" doc:name="set large payload"/>				
+		
+		<logger level="INFO" doc:name="Logger"/>
+		<coap-client:post config-ref="ETSI-Plugtest_Client_block32" path="/large-create" doc:name="CoAP Post /large-create" host="#[flowVars.host]" port="#[flowVars.port]"/>
+		<logger level="INFO" doc:name="Logger"/>
+		
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CREATED" expression="#[message.inboundProperties.'coap.response.code' == '2.01']" doc:name="Validation coap.response.code"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP coap.opt.block1.szx shoud be 1" expression="#[message.inboundProperties.'coap.opt.block1.szx' == '1']" doc:name="Validation coap.opt.block2.szx"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+	</sub-flow>
+</mule>

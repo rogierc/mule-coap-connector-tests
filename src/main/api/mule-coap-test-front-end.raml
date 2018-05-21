@@ -699,3 +699,132 @@ resourceTypes:
               \n Payload indicating the link description for /path/sub1, /path/sub2, ... ;
               \nServer sends 2.05 (Content) response on 3rd request, Payload contains /path/sub1
               \nClient displays the retrieved sub-resource."
+  /block:
+    description: Test support of Blockwise transfers.
+    /TD_COAP_BLOCK_01:
+      description: "Handle GET blockwise transfer for large resource (early negotiation).
+        \n- Client supports Block transfers;
+        \n- Server supports Block transfers;
+        \n- Server offers a large resource /large;
+        \n- Client knows /large requires block transfer;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve resource /large.
+          Client sends a GET requests for each block. The requests optionally contains
+          a Block2 option indicating:
+          \n NUM = i where “i” is the block number of the current block, starting with 0;
+          \n M = 0;
+          \n SZX = the desired block size."
+        responses:
+          200:
+            description: "Server sends 2.05 (Content) responses with a Block2 option
+              indicating:
+              \n NUM = n where “n” is the block number;
+              \n M = 0;
+              \n SZX = the requested block size;
+              \n Payloads are blocks with size is lesser or equal to 2^(SZX+4) bytes."
+ 
+    /TD_COAP_BLOCK_02:
+      description: "Handle GET blockwise transfer for large resource (late negotiation).
+        \n- Client supports Block transfers;
+        \n- Server supports Block transfers;
+        \n- Server offers a large resource /large;
+        \n- Client knows /large requires block transfer;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to retrieve resource /large.
+          Client sends a GET requests for each block. Client sends a GET request not containing Block2 option."
+        responses:
+          200:
+            description: "Server sends 2.05 (Content) responses with a Block2 option
+              indicating:
+              \n NUM = n where “n” is the block number;
+              \n M = 0;
+              \n SZX = the actual block size;
+              \n Payloads are blocks with size is lesser or equal to 2^(SZX+4) bytes."
+
+    /TD_COAP_BLOCK_03:
+      description: "Handle PUT blockwise transfer for large resource.
+        \n- Client supports Block transfers;
+        \n- Server supports Block transfers;
+        \n- Server offers a large resource /large-update;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to update resource /large-update on Server.
+          Client sends a PUT request containing Block1 option indicating:
+          \n- NUM = i where 'i' is the block number of the current
+          block. If the server decreased the SZX parameter in response on first request,
+          then the client should adapt the block size
+          accordingly and may resume the transfer from block
+          size in first response minus the decreased size instead of block 1)
+          \n- M = 1 and M = 0 for the last block;
+          \n- SZX = the desired block size;
+          \n Payloads are blocks with size is lesser or equal to 2^(SZX+4) bytes."                   
+        responses:
+          200:
+            description: "Server sends 2.04 (Changed) responses with a Block1 option
+              indicating:
+              \n NUM = n where 'n' is the block number;
+              \n M = 1 for the first, M = 0 (stateless) or 1 (atomic),
+              M = 0 for the last block;
+              \n SZX = the actual block size;
+              \nServer indicates presence of the complete updated resource
+              /large-update"
+                           
+    /TD_COAP_BLOCK_04:
+      description: "Handle POST blockwise transfer for large resource.
+        \n- Client supports Block transfers;
+        \n- Server supports Block transfers;
+        \n- Server accepts creation of new resources on /large-create;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to create a new resource /large-create on Server.
+          Client sends a POST request containing Block1 option indicating:
+          \n- NUM = i where 'i' is the block number of the current
+          block. If the server decreased the SZX parameter in response on first request,
+          then the client should adapt the block size
+          accordingly and may resume the transfer from block
+          size in first response minus the decreased size instead of block 1)
+          \n- M = 1 and M = 0 for the last block;
+          \n- SZX = the desired block size;
+          \n Payloads are blocks with size is lesser or equal to 2^(SZX+4) bytes."                   
+        responses:
+          200:
+            description: "Server sends 2.01 (Created) responses with a Block1 option
+              indicating:
+              \n NUM = n where 'n' is the block number;
+              \n M = 1, M = 0 for the last block;
+              \n SZX = the actual block size;
+              \nServer indicates presence of the complete new resource
+              /large-create."
+
+  /observe:
+    description: Test support of Observing Resources.
+    /TD_COAP_OBS_01:
+      description: "Handle resource observation with CON messages.
+        \n- Client supports Observe option;
+        \n- Server supports Observe option;
+        \n- Server offers an observable resource /obs which changes periodically (e.g. every
+        5s) which produces confirmable notifications;"
+      type: etsi-plugtest
+      get:
+        description: "Client is requested to send to the server a confirmable GET
+          request with observe option for resource /obs .
+          The request sent by client contains:
+          \n- Type = 0 (CON);
+          \n- Code = 1 (GET);
+          \n- Token value = a value generated by the client;
+          \n- Observe option = empty;"                   
+        responses:
+          200:
+            description: "Server sends the response containing:
+              \n- Type = 2 (ACK)
+              \n- Content-format of the resource /obs
+              \n- Token value = same as one found in the step 2
+              \n- Observe option with a sequence number
+              \nServer sends a notification containing:
+              \n- Type = 0 (CON)
+              \n- Content-format = same as one found in the step 3
+              \n- Token value = same as one found in the step 3
+              \n- Observe option indicating increasing values"
+    

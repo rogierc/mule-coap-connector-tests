@@ -190,4 +190,29 @@
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
+    <flow name="get:/etsi-plugtest/block/TD_COAP_BLOCK_01:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/block/TD_COAP_BLOCK_02:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_02" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/block/TD_COAP_BLOCK_03:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_03" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/block/TD_COAP_BLOCK_04:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_04" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/etsi-plugtest/observe/TD_COAP_OBS_01:Router">
+        <flow-ref name="coap-client-etsi-plugtest-set-params" doc:name="coap-client-etsi-plugtest-set-params" />
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_01" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
 </mule>

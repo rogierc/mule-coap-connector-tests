@@ -8,6 +8,7 @@ http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/cor
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
     <coap-client:config name="ETSI-Plugtest_Client" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration"/>
+    <coap-client:config name="ETSI-Plugtest_Client_block32" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration"/>
     <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
     
     <choice-exception-strategy name="client-exception-strategy" >
@@ -124,6 +125,18 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="TD_COAP_LINK_09"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_09: ' + payload ]" doc:name="Variable"/>
  
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01" doc:name="TD_COAP_BLOCK_01"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_01: ' + payload ]" doc:name="Variable"/>
+ 
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_02" doc:name="TD_COAP_BLOCK_02"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_02: ' + payload ]" doc:name="Variable"/>
+
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_03" doc:name="TD_COAP_BLOCK_03"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_03: ' + payload ]" doc:name="Variable"/>
+ 
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_04" doc:name="TD_COAP_BLOCK_04"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_04: ' + payload ]" doc:name="Variable"/>
+
         <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
     </sub-flow >
     
@@ -569,7 +582,7 @@ response 4: #[flowVars.response4] ; " doc:name="Set Payload"/>
        	<logger level="INFO" doc:name="Logger"/>
         <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
         <validation:is-true config-ref="Validation_Configuration" 
-        	message="CoAP response code is not CREATED" 
+        	message="CoAP response code should be CREATED" 
         	expression="#[message.inboundProperties.'coap.response.code' == '2.01' ]" doc:name="Validation coap.response.code"/>
 
         <set-variable variableName="request2" value="TD_COAP_CORE_23b" doc:name="save response2"/>        
@@ -579,9 +592,9 @@ response 4: #[flowVars.response4] ; " doc:name="Set Payload"/>
         <coap-client:put config-ref="ETSI-Plugtest_Client" path="/create1" doc:name="CoAP Put /create1" host="#[flowVars.host]" port="#[flowVars.port]"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
        	<logger level="INFO" doc:name="Logger"/>
-        <validation:is-false config-ref="Validation_Configuration" message="CoAP result shold be failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
+        <validation:is-false config-ref="Validation_Configuration" message="CoAP result should be failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
         <validation:is-true config-ref="Validation_Configuration" 
-        	message="CoAP response code is PRECONDITION_FAILED" 
+        	message="CoAP response code should be PRECONDITION_FAILED" 
         	expression="#[message.inboundProperties.'coap.response.code' == '4.12' ]" doc:name="Validation coap.response.code"/>
         
         <set-payload value="Test OK" doc:name="Set Payload"/>       

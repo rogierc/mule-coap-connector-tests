@@ -138,6 +138,56 @@
             <version>${mule.version}</version>
             <scope>provided</scope>
         </dependency>
+    <dependency>
+            <groupId>org.mule.modules</groupId>
+            <artifactId>mule-module-schedulers</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+            <exclusions>
+        <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-terracotta-bootstrap</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-core</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-commonj</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-jboss</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-oracle</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-weblogic</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler.internal</groupId>
+      <artifactId>quartz-plugins</artifactId>
+    </exclusion>
+    <exclusion>
+      <groupId>org.quartz-scheduler</groupId>
+      <artifactId>quartz-jobs</artifactId>
+    </exclusion>    
+    <exclusion>
+      <groupId>org.terracotta</groupId>
+      <artifactId>product-upgradability-testing-utils</artifactId>
+</exclusion>
+      </exclusions> 
+        </dependency>
+    <dependency>
+            <groupId>org.mule.transports</groupId>
+            <artifactId>mule-transport-udp</artifactId>
+            <version>${mule.version}</version>
+            <scope>provided</scope>
+        </dependency>
     </dependencies>
 
 	<repositories>

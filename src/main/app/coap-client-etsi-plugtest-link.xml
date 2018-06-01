@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]"/>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]"/>
 		<logger level="INFO" doc:name="Logger"/>
 		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
 		<enricher doc:name="Message Enricher"  >
@@ -61,7 +61,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>rt=Type1</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -107,7 +107,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_03">
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>rt=*</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -126,7 +126,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_04">
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>rt=Type2</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -148,7 +148,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>if=If*</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -194,7 +194,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_06">
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>sz=*</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -214,7 +214,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_07">
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>href=/link1</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -234,7 +234,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_08">
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]">
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
             <coap-client:query-parameters>
                 <coap-client:query-parameter>href=/link*</coap-client:query-parameter>
             </coap-client:query-parameters>
@@ -253,7 +253,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
 		<set-variable variableName="found_path" value="#[ false ]" doc:name="reset found_path"/>
 		
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[flowVars.port]" doc:name="CoAP Discover" host="#[flowVars.host]"/>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]"/>
 		
 		<logger level="INFO" doc:name="Logger"/>
 		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
@@ -274,7 +274,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 			 doc:name="Validation existence /path resource" expression="#[flowVars.found_path == true]"/>
 		
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>		
-        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path" doc:name="CoAP Get /path" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path" doc:name="CoAP Get /path" host="#[sessionVars.host]" port="#[sessionVars.post]"/>
         
         <logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
@@ -287,7 +287,7 @@ http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mu
 		<validation:matches-regex message="content should contain link /path/sub3" regex=".*&lt;/path/sub3&gt;.*" caseSensitive="true" value="#[payload]" config-ref="Validation_Configuration" doc:name="Validation /path/sub3 link"/>
 		
 		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>		
-        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path/sub1" doc:name="CoAP Get /path/sub1" host="#[flowVars.host]" port="#[flowVars.port]"/>
+        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path/sub1" doc:name="CoAP Get /path/sub1" host="#[sessionVars.host]" port="#[sessionVars.post]"/>
         
         <logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>

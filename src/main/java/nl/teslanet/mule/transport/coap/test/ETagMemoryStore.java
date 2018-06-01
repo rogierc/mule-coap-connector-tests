@@ -56,6 +56,17 @@ public class ETagMemoryStore
 	}
 	
 	/**
+	 * Set the etag that belongs to a key. 
+	 * @param key The key of the etag.
+	 * @param hexString The new value of the etag in hexstring format 
+	 * @return the etag that already existed or a newly created etag.
+	 */
+	public static void setETag( String key, String hexString )
+	{
+		etags.put( key, new ETag( hexString ));
+	}
+	
+	/**
 	 * Create new etag for a key and store this for later use.
 	 * @param key The key of the etag.
 	 * @return the newly created etag.

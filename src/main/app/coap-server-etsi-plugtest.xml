@@ -30,7 +30,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
             <coap-server:resource name="multi-format" get="true"/>
             <coap-server:resource name="validate" get="true" put="true"/>
             <coap-server:resource name="create1" get="true" put="true" delete="true"/>
-            <coap-server:resource name="obs" get="true" observable="true"/>
+            <coap-server:resource name="obs" get="true" put="true" observable="true" delete="true"/>
+            <coap-server:resource name="obs-non" get="true" observable="true"/>
             <coap-server:resource name="link1" title="Link test resource" ifdesc="If1" rt="Type1, Type2"/>
             <coap-server:resource name="link3" title="Link test resource" ifdesc="foo" rt="Type1, Type3"/>
             <coap-server:resource name="link2" title="Link test resource" ifdesc="If2" rt="Type2, Type3"/>
@@ -496,7 +497,8 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 		</choice>
         <logger level="INFO" doc:name="Logger"/>
     </flow>
-       <flow name="coap-server-etsi-plugtest-large-create">
+    
+    <flow name="coap-server-etsi-plugtest-large-create">
         <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/large-create" doc:name="CoAP ETSI Plugtest listen /large-create"/>
         <logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
@@ -519,5 +521,86 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
         <logger level="INFO" doc:name="Logger"/>
     </flow>
     
+    <flow name="coap-server-etsi-plugtest-obs">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="CoAP ETSI Plugtest listen /obs"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('obs_etag')]" doc:name="get actual etag"/>
+        <set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('obs_etag')]" doc:name="get actual payload"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="#[ flowVars.actual_payload ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
+                <set-property propertyName="coap.opt.max_age" value="5" doc:name="set max_age"/>       				
+                <set-property propertyName="coap.response.code" value="CONTENT" doc:name="CONTENT"/>       				
+			</when>			
+			<when expression="#[ flowVars.method == 'PUT']">
+        		<coap-server:resource-changed config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="CoAP Server"/>
+                <set-payload value="#[ NullPayload.getInstance() ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
+                <set-property propertyName="coap.response.code" value="CHANGED" doc:name="CHANGED"/>
+	
+			</when>			
+			<when expression="#[ flowVars.method == 'DELETE']">
+                <coap-server:remove-resource config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="remove /obs"/>
+                <coap-server:add-resource config-ref="CoAP_ETSI_Plugtest_Server" ct="0" title="Observe resource" uri="/obs" delete="true" get="true" observable="true" doc:name="CoAP Server"/>
+                <set-payload value="#[ flowVars.actual_payload ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
+                <set-property propertyName="coap.response.code" value="DELETED" doc:name="DELETED"/>
+	
+			</when>	
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    <flow name="coap-server-etsi-plugtest-obs-non">
+        <coap-server:listen config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs-non" doc:name="CoAP ETSI Plugtest listen /obs-non"/>
+        <logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <set-variable variableName="method"
+			value="#[ message.inboundProperties['coap.request.code']]" doc:name="set method"/>
+		<set-variable variableName="uri" value="#[message.inboundProperties['coap.request.uri'] ]"
+			doc:name="set uri"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('obs-non_etag')]" doc:name="get actual etag"/>
+        <set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('obs-non_etag')]" doc:name="get actual payload"/>
+
+		<choice doc:name="Choice request code">
+			<when expression="#[ flowVars.method == 'GET']">
+                <set-payload value="#[ flowVars.actual_payload ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
+                <set-property propertyName="coap.opt.max_age" value="5" doc:name="set max_age"/>       				
+                <set-property propertyName="coap.response.code" value="CONTENT" doc:name="CONTENT"/>       				
+			</when>			
+			<otherwise>
+                <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
+                <set-property propertyName="coap.response.code" value="NOT_IMPLEMENTED" doc:name="NOT_IMPLEMENTED"/>       				
+			</otherwise>
+		</choice>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    
+    <flow name="coap-server-etsi-plugtest-obs-changer" processingStrategy="synchronous">
+        <poll doc:name="Poll">
+            <fixed-frequency-scheduler frequency="5" startDelay="2" timeUnit="SECONDS"/>
+            <watermark variable="resource_state" default-expression="#[ 1 ]" update-expression="#[ new java.util.Date().getTime()]"/>
+            <set-payload value="#['obs resource content ' +  flowVars.resource_state]" doc:name="Set Payload"/>
+        </poll>
+        
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('obs_etag')]" doc:name="set new etag"/>
+       	<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('obs_etag', payload)]" doc:name="set actual payload"/>      
+        <coap-server:resource-changed config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="CoAP Server"/>
+        
+        <set-payload value="#['obs-non resource content ' +  flowVars.resource_state]" doc:name="Set Payload"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getNewETag('obs-non_etag')]" doc:name="set new etag"/>
+       	<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('obs-non_etag', payload)]" doc:name="set actual payload"/>
+        <coap-server:resource-changed config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs-non" doc:name="CoAP Server"/>
+    </flow>
     
 </mule>

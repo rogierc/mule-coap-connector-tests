@@ -146,8 +146,17 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_06" doc:name="TD_COAP_OBS_06"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_06: ' + payload ]" doc:name="Variable"/>
 
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_07" doc:name="TD_COAP_OBS_06"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_06: ' + payload ]" doc:name="Variable"/>
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_07" doc:name="TD_COAP_OBS_07"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_07: ' + payload ]" doc:name="Variable"/>
+
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_08" doc:name="TD_COAP_OBS_08"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_08: ' + payload ]" doc:name="Variable"/>
+
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_09" doc:name="TD_COAP_OBS_09"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_09: ' + payload ]" doc:name="Variable"/>
+
+        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_10" doc:name="TD_COAP_OBS_10"/>
+        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_10: ' + payload ]" doc:name="Variable"/>
 
         <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
     </sub-flow >

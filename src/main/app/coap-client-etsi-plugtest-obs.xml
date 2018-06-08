@@ -95,6 +95,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                 <logger level="INFO" doc:name="Logger"/>
                 <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '0702' )]" doc:name="set new etag"/>
                 <coap-client:delete config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="Delete /obs"/>
+                <coap-client:delete config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="Delete /obs"/>
             </when>
             <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0702' )) == true ]">
                 <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
@@ -128,6 +129,53 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                 <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
                 <logger level="INFO" doc:name="Logger"/>
                 <vm:outbound-endpoint exchange-pattern="one-way" path="obs-reply-08" connector-ref="VM" doc:name="VM"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0900' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '0901' )]" doc:name="set new etag"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0901' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '0902' )]" doc:name="set new etag"/>
+                <set-payload value="&lt;test&gt;" doc:name="Set Payload"/>
+                <set-property propertyName="coap.opt.content_format" value="0" doc:name="set coap.opt.content_format"/>
+                <coap-client:put config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="Put /obs"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0902' )) == true ]">
+                <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
+                <set-session-variable variableName="content_format" value="#[message.inboundProperties.'coap.opt.content_format']" encoding="UTF-8" mimeType="text/plain" doc:name="save content_format"/>
+                <set-session-variable variableName="observe" value="#[message.inboundProperties.'coap.opt.observe']" encoding="UTF-8" mimeType="text/plain" doc:name="save observe nr"/>
+                <set-property propertyName="MULE_CORRELATION_ID" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('obs_client')]" doc:name="set MULE_CORRELATION_ID"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" path="obs-reply-09" connector-ref="VM" doc:name="VM"/>
+            </when>            
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '1000' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '1001' )]" doc:name="set new etag"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '1001' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+                <coap-client:get config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="get /obs"/>
+        		<validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Content" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
+                <validation:is-empty config-ref="Validation_Configuration" message="Observe option should be empty" value="#[message.inboundProperties.'coap.opt.observe']" doc:name="Validation coap.opt.observe"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '1002' )]" doc:name="set new etag"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '1002' )) == true ]">
+                <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
+                <set-session-variable variableName="content_format" value="#[message.inboundProperties.'coap.opt.content_format']" encoding="UTF-8" mimeType="text/plain" doc:name="save content_format"/>
+                <set-session-variable variableName="observe" value="#[message.inboundProperties.'coap.opt.observe']" encoding="UTF-8" mimeType="text/plain" doc:name="save observe nr"/>
+                <set-property propertyName="MULE_CORRELATION_ID" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('obs_client')]" doc:name="set MULE_CORRELATION_ID"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <vm:outbound-endpoint exchange-pattern="one-way" path="obs-reply-10" connector-ref="VM" doc:name="VM"/>
             </when>
             <otherwise>
                 <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
@@ -252,6 +300,36 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         </request-reply>
 		<logger level="INFO" doc:name="Logger"/>
         <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Internal Server Error" expression="#[sessionVars.response_code == '5.00']" doc:name="Validation coap.response.code"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<set-payload value="Test OK" doc:name="Set Payload"/>
+	</flow>
+	
+	<flow name="coap-client-etsi-plugtest-TD_COAP_OBS_09">
+		
+		<logger level="INFO" doc:name="Logger"/>
+        <coap-client:start-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" responseHandler="obs-handler" doc:name="CoAP Start Observe"/>
+        <set-payload value="09" doc:name="Set Payload"/>
+        <request-reply storePrefix="OBS_09" timeout="9000" doc:name="Request-Reply">
+            <vm:outbound-endpoint exchange-pattern="one-way" path="obs-request" connector-ref="VM" doc:name="obs-request"/>
+            <vm:inbound-endpoint exchange-pattern="one-way" path="obs-reply-09" connector-ref="VM" doc:name="obs-reply-09"/>
+        </request-reply>
+		<logger level="INFO" doc:name="Logger"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Content" expression="#[sessionVars.response_code == '2.05']" doc:name="Validation coap.response.code"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<set-payload value="Test OK" doc:name="Set Payload"/>
+	</flow>
+	
+	<flow name="coap-client-etsi-plugtest-TD_COAP_OBS_10">
+		
+		<logger level="INFO" doc:name="Logger"/>
+        <coap-client:start-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" responseHandler="obs-handler" doc:name="CoAP Start Observe"/>
+        <set-payload value="10" doc:name="Set Payload"/>
+        <request-reply storePrefix="OBS_10" timeout="9000" doc:name="Request-Reply">
+            <vm:outbound-endpoint exchange-pattern="one-way" path="obs-request" connector-ref="VM" doc:name="obs-request"/>
+            <vm:inbound-endpoint exchange-pattern="one-way" path="obs-reply-10" connector-ref="VM" doc:name="obs-reply-10"/>
+        </request-reply>
+		<logger level="INFO" doc:name="Logger"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Content" expression="#[sessionVars.response_code == '2.05']" doc:name="Validation coap.response.code"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
 		<set-payload value="Test OK" doc:name="Set Payload"/>
 	</flow>

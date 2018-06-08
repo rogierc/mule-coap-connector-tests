@@ -547,7 +547,7 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 			</when>			
 			<when expression="#[ flowVars.method == 'DELETE']">
                 <coap-server:remove-resource config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="remove /obs"/>
-                <coap-server:add-resource config-ref="CoAP_ETSI_Plugtest_Server" ct="0" title="Observe resource" uri="/obs" delete="true" get="true" observable="true" doc:name="CoAP Server"/>
+                <coap-server:add-resource config-ref="CoAP_ETSI_Plugtest_Server" ct="0" title="Observe resource" uri="/obs" delete="true" get="true" put="true" observable="true" doc:name="CoAP Server"/>
                 <set-payload value="#[ flowVars.actual_payload ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
                 <set-property propertyName="coap.response.code" value="DELETED" doc:name="DELETED"/>
 	

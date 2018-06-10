@@ -7,3 +7,5 @@ syntax: regexp
 ^catalog$
 syntax: regexp
 ^\.classpath$
+syntax: regexp
+\.directory$

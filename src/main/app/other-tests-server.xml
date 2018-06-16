@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation" xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:jms="http://www.mulesoft.org/schema/mule/jms"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client"
+	xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
+	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
+	<coap-server:config name="CoAP_Test_Server"
+		doc:name="CoAP Server: Server Configuration" bindToPort="5685" bindToSecurePort="5686">
+		<coap-server:resources>
+			<coap-server:resource name="test" get="true" put="true" delete="true" post="true"/>
+			<coap-server:resource name="seg1" get="true">
+				<coap-server:resources>
+					<coap-server:resource name="seg2" get="true">
+						<coap-server:resources>
+							<coap-server:resource name="seg3" get="true"/>
+						</coap-server:resources>
+					</coap-server:resource>
+				</coap-server:resources>
+			</coap-server:resource>
+			<coap-server:resource name="location-query" post="true"/>
+			<coap-server:resource name="query" get="true"/>
+			<coap-server:resource name="separate" get="true" earlyAck="true"/>
+			<coap-server:resource name="large" get="true" sz="2048"/>
+			<coap-server:resource name="large-update" put="true" sz="2048"/>
+			<coap-server:resource name="large-create" get="true" post="true" sz="2048"/>
+			<coap-server:resource name="multi-format" get="true"/>
+			<coap-server:resource name="validate" get="true" put="true"/>
+			<coap-server:resource name="create1" get="true" put="true" delete="true"/>
+			<coap-server:resource name="obs" get="true" put="true" observable="true" delete="true"/>
+			<coap-server:resource name="obs-non" get="true" observable="true"/>
+			<coap-server:resource name="link1" title="Link test resource" ifdesc="If1"
+				rt="Type1, Type2"/>
+			<coap-server:resource name="link3" title="Link test resource" ifdesc="foo"
+				rt="Type1, Type3"/>
+			<coap-server:resource name="link2" title="Link test resource" ifdesc="If2"
+				rt="Type2, Type3"/>
+			<coap-server:resource name="path" get="true" title="Resource that contains subresources"
+				ct="40">
+				<coap-server:resources>
+					<coap-server:resource name="sub1" get="true" title="first sub resource" ct="0"/>
+					<coap-server:resource name="sub3" get="true" title="third sub resource" ct="0"/>
+					<coap-server:resource name="sub2" get="true" title="second sub resource" ct="0"
+					/>
+				</coap-server:resources>
+			</coap-server:resource>
+		</coap-server:resources>
+	</coap-server:config>
+    <validation:config name="Validation_Configuration_othertests" doc:name="Validation Configuration"/>
+
+	<flow name="other-tests-test">
+		<coap-server:listen config-ref="CoAP_Test_Server" uri="/test"
+			doc:name="CoAP listen /test"/>
+		<logger level="INFO" doc:name="Logger"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="inbound" value="#[message.inboundProperties]" doc:name="inbound"/>
+		<logger level="INFO" doc:name="Log payload" message="#[payload]"/>
+        <mulexml:xml-to-dom-transformer  mimeType="application/xml" doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
+        <foreach collection="#[ xpath3( '/test/request/assert/inboundProperty',  payload, 'NODESET' )]" doc:name="For Each assert inboundproperty">
+            <set-variable variableName="name" value="#[ xpath3( './name/text()', payload, 'STRING') ]" doc:name="name"/>
+            <set-variable doc:name="soll" value="#[ xpath3( './value/text()', payload, 'STRING') ]" variableName="soll" encoding="windows-1256"/>
+            <set-variable doc:name="ist" value="#[ flowVars.inbound[ flowVars.name ].toString() ]" variableName="ist"/>
+            <validation:is-true config-ref="Validation_Configuration_othertests" 
+            message="validation failed on inboundProperty: #[ flowVars.name ] ( expected: #[flowVars.soll] ; actual: #[flowVars.ist] );" 
+            expression="#[ flowVars.soll.equals( flowVars.ist ) ]" 
+            doc:name="Validation"/>
+        </foreach>
+		<set-payload value="#[ xpath3( '/test/response/payload/text()',  payload, 'STRING' )]" encoding="UTF-8" doc:name="Set Payload"/>
+	</flow>
+
+</mule>

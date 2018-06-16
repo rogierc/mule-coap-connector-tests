@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
+http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd">
+    <coap-client:config name="Test_Client_Configuration" host="127.0.0.1" port="5685" doc:name="CoAP Client: Configuration"/>
+    
+    <flow name="other-tests-properties-con">
+        <set-variable variableName="expect_coap_request_code" value="GET" doc:name="expect_coap_request_code"/>
+        <set-variable variableName="expect_coap_request_confirmable" value="true" doc:name="expect_coap_request_confirmable"/>
+        <set-variable variableName="response_payload" value="ServerResponse1" doc:name="response_payload"/>
+        <parse-template location="testmessage_template.xml" doc:name="Parse Template"/>
+        
+        <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <validation:is-true config-ref="Validation_Configuration_othertests" message="request failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation"/>
+        <validation:is-true config-ref="Validation_Configuration_othertests" 
+        message="unexpected payload ]" 
+        expression="#[ payload ==  flowVars.response_payload ]" 
+        doc:name="payload Validation"/>
+        <set-payload value="Test OK" doc:name="Test OK"/>
+    </flow>
+    
+    <flow name="other-tests-properties-non">
+        <set-variable variableName="expect_coap_request_code" value="GET" doc:name="expect_coap_request_code"/>
+        <set-variable variableName="expect_coap_request_confirmable" value="false" doc:name="expect_coap_request_confirmable"/>
+        <set-variable variableName="response_payload" value="ServerResponse2" doc:name="response_payload"/>
+        <parse-template location="testmessage_template.xml" doc:name="Parse Template"/>
+        
+        <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get" confirmable="false"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        
+        <validation:is-true config-ref="Validation_Configuration_othertests" message="request failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation"/>
+        <validation:is-true config-ref="Validation_Configuration_othertests" 
+        message="unexpected payload ]" 
+        expression="#[ payload ==  flowVars.response_payload ]" 
+        doc:name="payload Validation"/>
+        <set-payload value="Test OK" doc:name="Test OK"/>
+    </flow>
+</mule>

@@ -1,0 +1,17 @@
+<test>
+    <request>
+        <assert>
+            <inboundProperty>
+                <name>coap.request.code</name>
+                <value>#[flowVars.expect_coap_request_code]</value>
+            </inboundProperty>
+            <inboundProperty>
+                <name>coap.request.confirmable</name>
+                <value>#[flowVars.expect_coap_request_confirmable]</value>
+            </inboundProperty>
+        </assert>
+    </request>
+    <response>
+        <payload>#[flowVars.response_payload]</payload>
+    </response>
+</test>

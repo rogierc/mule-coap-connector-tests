@@ -60,6 +60,52 @@ resourceTypes:
             text/plain:
               description: "error message"
 
+  other-test:
+    description: Perform test 
+    get:
+      queryParameters: 
+      responses:
+        200:
+          description:  Test succeeded.
+          body: 
+            text/plain:
+              description: "test result"
+        404:
+          description: Resource not found
+          body: 
+            text/plain:
+              description: "error message"
+        405:
+          description: Method not allowed
+          body: 
+            text/plain:
+              description: "error message"
+        415:
+          description: Unsupported media type
+          body: 
+            text/plain:
+              description: "error message"
+        406:
+          description: Not acceptable
+          body: 
+            text/plain:
+              description: "error message"
+        400:
+          description: Bad request
+          body: 
+            text/plain:
+              description: "error message"
+        500:
+          description: Internal server error.
+          body: 
+            text/plain:         
+              description: "error message"
+        502:
+          description: CoAP response indicated failure or timeout.
+          body: 
+            text/plain:
+              description: "error message"
+
 
 /etsi-plugtest:
   description: "ETSI Plugtests: 
@@ -1073,3 +1119,22 @@ resourceTypes:
               \n- Content-format of the resource /obs, ➔ f;
               \n- Token value = t;
               \n- Observe option indicating increasing values;"
+/other:
+  description: Other CoAP connector tests
+  /confirmable:
+    description: Test correct handling of mule properties in confirmable requests
+    type: other-test
+    get:
+      description: Do requests and validate expected properties
+      responses:
+        200:
+          description: Test succeeded
+  /non-confirmable:
+    description: Test correct handling of mule properties in non confirmable requests
+    type: other-test
+    get:
+      description: Do requests and validate expected properties
+      responses:
+        200:
+          description: Test succeeded
+      

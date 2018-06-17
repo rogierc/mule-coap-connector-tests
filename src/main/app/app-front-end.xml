@@ -250,6 +250,12 @@
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_10" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
+    
+    <flow name="get:/other/all:Router">
+        <flow-ref name="other-tests-all" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    
     <flow name="get:/other/confirmable:Router">
         <flow-ref name="other-tests-properties-con" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
@@ -258,4 +264,5 @@
         <flow-ref name="other-tests-properties-non" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
+
 </mule>

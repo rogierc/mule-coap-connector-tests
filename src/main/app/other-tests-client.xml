@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
 	xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -8,40 +8,79 @@
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
-http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd">
+http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd
+http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
     <coap-client:config name="Test_Client_Configuration" host="127.0.0.1" port="5685" doc:name="CoAP Client: Configuration"/>
+    <sub-flow name="other-tests-all">
+        <flow-ref name="other-tests-properties-con" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-properties-non" doc:name="Flow Reference"/>
+    </sub-flow>
     
-    <flow name="other-tests-properties-con">
-        <set-variable variableName="expect_coap_request_code" value="GET" doc:name="expect_coap_request_code"/>
-        <set-variable variableName="expect_coap_request_confirmable" value="true" doc:name="expect_coap_request_confirmable"/>
-        <set-variable variableName="response_payload" value="ServerResponse1" doc:name="response_payload"/>
-        <parse-template location="testmessage_template.xml" doc:name="Parse Template"/>
+    
+    <sub-flow name="other-tests-properties-con">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
+        <parse-template location="testmessage_1.xml" doc:name="set testmessage"/>
+        <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
+            <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
+        </enricher>
         
         <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get"/>
+
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-        
-        <validation:is-true config-ref="Validation_Configuration_othertests" message="request failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation"/>
-        <validation:is-true config-ref="Validation_Configuration_othertests" 
-        message="unexpected payload ]" 
-        expression="#[ payload ==  flowVars.response_payload ]" 
-        doc:name="payload Validation"/>
-        <set-payload value="Test OK" doc:name="Test OK"/>
-    </flow>
+        <flow-ref name="other-tests-response-assert-inbound" doc:name="other-tests-response-assert-inbound"/>
+        <flow-ref name="other-tests-response-assert-payload" doc:name="other-tests-response-assert-inbound"/>
+        <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
+    </sub-flow>
     
-    <flow name="other-tests-properties-non">
-        <set-variable variableName="expect_coap_request_code" value="GET" doc:name="expect_coap_request_code"/>
-        <set-variable variableName="expect_coap_request_confirmable" value="false" doc:name="expect_coap_request_confirmable"/>
-        <set-variable variableName="response_payload" value="ServerResponse2" doc:name="response_payload"/>
-        <parse-template location="testmessage_template.xml" doc:name="Parse Template"/>
-        
+    <sub-flow name="other-tests-properties-non">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
+        <parse-template location="testmessage_2.xml" doc:name="set testmessage"/>
+        <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
+            <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
+        </enricher>
+                
         <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get" confirmable="false"/>
+
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-        
-        <validation:is-true config-ref="Validation_Configuration_othertests" message="request failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation"/>
-        <validation:is-true config-ref="Validation_Configuration_othertests" 
-        message="unexpected payload ]" 
-        expression="#[ payload ==  flowVars.response_payload ]" 
-        doc:name="payload Validation"/>
-        <set-payload value="Test OK" doc:name="Test OK"/>
-    </flow>
+        <flow-ref name="other-tests-response-assert-inbound" doc:name="other-tests-response-assert-inbound"/>
+        <flow-ref name="other-tests-response-assert-payload" doc:name="other-tests-response-assert-inbound"/>
+        <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
+    </sub-flow>
+    
+    <sub-flow name="other-tests-response-assert-inbound">
+        <set-variable variableName="inbound" value="#[message.inboundProperties]" doc:name="inbound"/>
+        <foreach collection="#[ xpath3( '/test/response/assert/inboundProperty',  flowVars.test, 'NODESET' )]" doc:name="For Each assert inboundproperty">
+            <set-variable variableName="name" value="#[ xpath3( './name/text()', payload, 'STRING') ]" doc:name="name"/>
+            <set-variable doc:name="soll" value="#[ xpath3( './value/text()', payload,, 'STRING') ]" variableName="soll" />
+            <set-variable doc:name="ist" value="#[ flowVars.inbound[ flowVars.name ].toString() ]" variableName="ist"/>
+            <validation:is-true config-ref="Validation_Configuration_othertests" 
+            message="validation failed on inboundProperty: #[ flowVars.name ] ( expected: #[flowVars.soll] ; actual: #[flowVars.ist] );" 
+            expression="#[ flowVars.soll.equals( flowVars.ist ) ]" 
+            doc:name="Validation"/>
+        </foreach>    
+    </sub-flow>
+    
+    <sub-flow name="other-tests-response-assert-payload">
+       <choice doc:name="Choice">
+            <when expression="#[ xpath3( '/test/response/assert/payload/value',  flowVars.test, 'NODE' ) != empty ]">
+	            <set-variable doc:name="soll" value="#[ xpath3( '/test/response/assert/payload/value/text()', flowVars.test, 'STRING') ]" variableName="soll" />
+	            <set-variable doc:name="ist" value="#[ payload.toString() ]" variableName="ist"/>
+				<validation:is-true config-ref="Validation_Configuration_othertests" 
+            message="validation failed on payload: expected: #[flowVars.soll] ; actual: #[flowVars.ist] );" 
+            expression="#[ flowVars.soll.equals( flowVars.ist ) ]" 
+            doc:name="payload Validation"/>
+            </when>
+            <when expression="#[ xpath3( '/test/response/assert/payload/empty',  flowVars.test, 'NODE' ) != empty ]">
+	            <set-variable doc:name="soll" value="#[ #[ NullPayload.getInstance().toString() ]" variableName="soll" />
+	            <set-variable doc:name="ist" value="#[ payload.toString() ]" variableName="ist"/>
+				<validation:is-true config-ref="Validation_Configuration_othertests" 
+            message="validation failed on payload: expected: #[flowVars.soll] ; actual: #[flowVars.ist] );" 
+            expression="#[ flowVars.soll.equals( flowVars.ist ) ]" 
+            doc:name="payload Validation"/>
+            </when>
+            <otherwise>
+                <echo-component doc:name="Echo"/>
+            </otherwise>
+        </choice>
+   </sub-flow>
 </mule>

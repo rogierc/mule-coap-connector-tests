@@ -1121,6 +1121,14 @@ resourceTypes:
               \n- Observe option indicating increasing values;"
 /other:
   description: Other CoAP connector tests
+  /all:
+    description: Collection of all other tests.
+    type: other-test
+    get:
+      description: Perform all other tests
+      responses:
+        200:
+          description: Tests succeeded
   /confirmable:
     description: Test correct handling of mule properties in confirmable requests
     type: other-test

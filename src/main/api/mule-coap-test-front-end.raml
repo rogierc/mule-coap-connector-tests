@@ -1129,16 +1129,24 @@ resourceTypes:
       responses:
         200:
           description: Tests succeeded
-  /confirmable:
-    description: Test correct handling of mule properties in confirmable requests
+  /exception:
+    description: Test exception handling
     type: other-test
     get:
       description: Do requests and validate expected properties
       responses:
         200:
           description: Test succeeded
-  /non-confirmable:
-    description: Test correct handling of mule properties in non confirmable requests
+  /get-con:
+    description: Test confirmable GET requests
+    type: other-test
+    get:
+      description: Do requests and validate expected properties
+      responses:
+        200:
+          description: Test succeeded
+  /get-non:
+    description: Test non confirmable GET requests
     type: other-test
     get:
       description: Do requests and validate expected properties

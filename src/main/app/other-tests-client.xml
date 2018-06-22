@@ -12,14 +12,30 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
     <coap-client:config name="Test_Client_Configuration" host="127.0.0.1" port="5685" doc:name="CoAP Client: Configuration"/>
     <sub-flow name="other-tests-all">
-        <flow-ref name="other-tests-properties-con" doc:name="Flow Reference"/>
-        <flow-ref name="other-tests-properties-non" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-exception" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-get-con" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-get-non" doc:name="Flow Reference"/>
     </sub-flow>
     
     
-    <sub-flow name="other-tests-properties-con">
+    <sub-flow name="other-tests-exception">
         <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
-        <parse-template location="testmessage_1.xml" doc:name="set testmessage"/>
+        <parse-template location="testmessage_exception.xml" doc:name="set testmessage"/>
+        <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
+            <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
+        </enricher>
+        
+        <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get"/>
+
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <flow-ref name="other-tests-response-assert-inbound" doc:name="other-tests-response-assert-inbound"/>
+        <flow-ref name="other-tests-response-assert-payload" doc:name="other-tests-response-assert-inbound"/>
+        <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
+    </sub-flow>
+        
+    <sub-flow name="other-tests-get-con">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
+        <parse-template location="testmessage_get-con.xml" doc:name="set testmessage"/>
         <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
             <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
         </enricher>
@@ -32,9 +48,9 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
         <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
     </sub-flow>
     
-    <sub-flow name="other-tests-properties-non">
+    <sub-flow name="other-tests-get-non">
         <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
-        <parse-template location="testmessage_2.xml" doc:name="set testmessage"/>
+        <parse-template location="testmessage_get-non.xml" doc:name="set testmessage"/>
         <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
             <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
         </enricher>

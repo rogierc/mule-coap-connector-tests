@@ -59,7 +59,15 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
     <validation:config name="Validation_Configuration_othertests" doc:name="Validation Configuration"/>
 
     <choice-exception-strategy name="other-tests-serverChoice_Exception_Strategy">
-        <catch-exception-strategy doc:name="Catch Exception Strategy"/>
+        <catch-exception-strategy doc:name="Catch Exception Strategy" when="#[ true ]">
+            <logger message="Exception Catched" level="INFO" doc:name="Logger"/>
+	       	
+			<set-variable variableName="test_payload" value="#[ xpath3( '/test/process/exception/catch/set/payload',  payload, 'NODE' )]" doc:name="test payload"/>
+            <set-variable variableName="test_outbound" value="#[ xpath3( '/test/process/exception/catch/set/outboundProperty',  payload, 'NODESET' )]" doc:name="test outbound"/>
+	        <flow-ref name="other-tests-server-set-payload" doc:name="set-payload"/>
+            <flow-ref name="other-tests-server-set-outbound" doc:name="set-outbound"/>
+            <logger level="INFO" doc:name="Logger"/>
+        </catch-exception-strategy>
     </choice-exception-strategy>    
 
 
@@ -68,9 +76,19 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
 			doc:name="CoAP listen /test"/>
 		<logger level="INFO" doc:name="Logger"/>
         <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-variable variableName="test" value="#[payload]" doc:name="save testplan"/>
 		<logger level="INFO" doc:name="Log payload" message="#[payload]"/>
         <mulexml:xml-to-dom-transformer  mimeType="application/xml" doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
 		<flow-ref doc:name="other-tests-request-assert-inbound" name="other-tests-request-assert-inbound"/>
+        <choice doc:name="Choice">
+            <when expression="#[ xpath3( '/test/process/exception/catch',  payload, 'NODE' ) != empty ]">
+				<set-variable variableName="test_outbound" value="#[ xpath3( '/test/process/exception/catch/set/outboundProperty',  flowVars.test, 'NODESET' )]" doc:name="Variable"/>
+                <validation:is-true config-ref="Validation_Configuration_othertests" message="Catch exception issued"  expression="#[false]" doc:name="throw CatchException"/>
+            </when>
+            <otherwise>
+                <echo-component doc:name="Echo"/>
+            </otherwise>
+        </choice>
         <choice doc:name="Choice">
             <when expression="#[ xpath3( '/test/response/set/payload/value',  payload, 'NODE' ) == empty ]">
                 <set-payload value="#[ NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
@@ -79,6 +97,7 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
                 <set-payload value="#[ xpath3( '/test/response/set/payload/value/text()',  payload, 'STRING' )]" encoding="UTF-8" doc:name="set Payload value" mimeType="text/plain"/>
             </otherwise>
         </choice>
+        <exception-strategy ref="other-tests-serverChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>
 
     </flow>
     
@@ -95,5 +114,27 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
         </foreach>    
     </sub-flow>
 
-
+    <sub-flow name="other-tests-server-set-outbound">
+        <set-variable variableName="outbound" value="#[ new java.util.HashMap()]" doc:name="Variable"/>
+        <foreach collection="#[ flowVars.test_outbound ]" doc:name="For Each outboundproperty">
+            <set-variable variableName="name" value="#[ xpath3( './name/text()', payload, 'STRING') ]" doc:name="name"/>
+            <set-variable doc:name="value" value="#[ xpath3( './value/text()', payload, 'STRING') ]" variableName="value" />
+            <set-variable variableName="tmp" value="#[ flowVars.outbound.put( flowVars.name, flowVars.value ) == empty ]" doc:name="Variable"/>
+            <logger level="INFO" doc:name="Logger"/>
+        </foreach>
+        <set-variable variableName="tmp" value="#[ message.getOutboundProperties().putAll( flowVars.outbound )  || true ]" doc:name="Variable"/>
+        
+    </sub-flow>
+    <sub-flow name="other-tests-server-set-payload">
+	       	<choice doc:name="Choice">
+	            <when expression="#[ flowVars.test_payload == empty ]">
+	                <set-payload value="#[ NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
+            		
+	            </when>
+	            <otherwise>
+	                <set-payload value="#[ xpath3( './value/text()',  flowVars.test_payload 'STRING' )]" encoding="UTF-8" doc:name="set Payload value" mimeType="text/plain"/>
+	            </otherwise>
+	        </choice>
+    </sub-flow>
+    
 </mule>

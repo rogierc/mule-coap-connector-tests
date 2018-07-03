@@ -1,39 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<mule xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+<mule xmlns:vm="http://www.mulesoft.org/schema/mule/vm"
+	xmlns:mulexml="http://www.mulesoft.org/schema/mule/xml" xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
 	xmlns:coap-server="http://www.mulesoft.org/schema/mule/coap-server" xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
 	xmlns:spring="http://www.springframework.org/schema/beans" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/current/mule-vm.xsd
+http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
 http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mule/coap-server/1.0/mule-coap-server.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
     <coap-client:config name="Test_Client_Configuration" host="127.0.0.1" port="5685" doc:name="CoAP Client: Configuration"/>
+    <choice-exception-strategy name="other-tests-client_Exception_Strategy">
+        <catch-exception-strategy doc:name="Catch Exception Strategy" when="#[ true ]">
+            <logger message="Exception Catched" level="INFO" doc:name="Logger"/>
+            <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
+            <set-session-variable variableName="content_format" value="#[message.inboundProperties.'coap.opt.content_format'.toString()]" encoding="UTF-8" mimeType="text/plain" doc:name="save content_format"/>
+            <set-session-variable variableName="observe" value="#[message.inboundProperties.'coap.opt.observe']" encoding="UTF-8" mimeType="text/plain" doc:name="save observe nr"/>
+	       	<set-payload doc:name="Set Payload" value="ClientException1"/>
+            <set-property propertyName="MULE_CORRELATION_ID" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('other_obs_client')]" doc:name="set MULE_CORRELATION_ID"/>
+            <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+            <logger message="other obs handler received notification" level="INFO" doc:name="Logger"/>
+            <logger level="INFO" doc:name="Logger"/>
+            <vm:outbound-endpoint exchange-pattern="one-way" path="other-obs-reply-01" connector-ref="VM" doc:name="VM"/>
+        </catch-exception-strategy>
+    </choice-exception-strategy>    
+    <flow name="coap-client-other-obs-request">
+        <vm:inbound-endpoint exchange-pattern="one-way" path="other-obs-request" doc:name="VM"/>
+    	<set-variable variableName="MULE_REPLYTO_STOP" value="true" doc:name="MULE_REPLYTO_STOP"/>
+        <logger message="other-obs-request received" level="INFO" doc:name="Logger"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('other_obs_client', payload + '00' )]" doc:name="set new etag"/>
+       	<set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('other_obs_client', message.correlationId )]" doc:name="save correlation id"/>
+        <logger level="INFO" doc:name="Logger"/>
+    </flow>
+    <flow name="coap-client-other-obs-reply">
+        <coap-client:handle-response config-ref="ETSI-Plugtest_Client" handlerName="other-obs-handler" doc:name="CoAP OBS handler"/>
+        <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('other_obs_client' )]" doc:name="get etag"/>
+        <choice doc:name="Choice">
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0100' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('other_obs_client', '0101' )]" doc:name="set new etag"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0101' )) == true ]">
+                <logger message="obs handler received first notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('other_obs_client', '0102' )]" doc:name="set new etag"/>
+            </when>
+            <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0102' )) == true ]">
+                <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
+                <set-session-variable variableName="content_format" value="#[message.inboundProperties.'coap.opt.content_format']" encoding="UTF-8" mimeType="text/plain" doc:name="save content_format"/>
+                <set-session-variable variableName="observe" value="#[message.inboundProperties.'coap.opt.observe']" encoding="UTF-8" mimeType="text/plain" doc:name="save observe nr"/>
+                <set-property propertyName="MULE_CORRELATION_ID" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('other_obs_client')]" doc:name="set MULE_CORRELATION_ID"/>
+                <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+                <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+                <validation:is-true config-ref="Validation_Configuration_othertests" 
+                    message="exception handling triggerd for test" 
+                    expression="#[ false ]" 
+                    doc:name="always throw exception"/>
+            </when>
+            <otherwise>
+                <logger message="obs handler received notification" level="INFO" doc:name="Logger"/>
+                <logger level="INFO" doc:name="Logger"/>
+            </otherwise>
+        </choice>
+        <exception-strategy ref="other-tests-client_Exception_Strategy" doc:name="Reference Exception Strategy"/>
+    </flow>
+
     <sub-flow name="other-tests-all">
-        <flow-ref name="other-tests-exception" doc:name="Flow Reference"/>
         <flow-ref name="other-tests-get-con" doc:name="Flow Reference"/>
         <flow-ref name="other-tests-get-non" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-client-exception" doc:name="Flow Reference"/>
+        <flow-ref name="other-tests-server-exception" doc:name="Flow Reference"/>
     </sub-flow>
     
-    
-    <sub-flow name="other-tests-exception">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
-        <parse-template location="testmessage_exception.xml" doc:name="set testmessage"/>
-        <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
-            <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
-        </enricher>
-        
-        <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get"/>
-
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-        <flow-ref name="other-tests-response-assert-inbound" doc:name="other-tests-response-assert-inbound"/>
-        <flow-ref name="other-tests-response-assert-payload" doc:name="other-tests-response-assert-inbound"/>
-        <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
-    </sub-flow>
-        
-    <sub-flow name="other-tests-get-con">
+     <sub-flow name="other-tests-get-con">
         <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
         <parse-template location="testmessage_get-con.xml" doc:name="set testmessage"/>
         <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
@@ -99,4 +143,45 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
             </otherwise>
         </choice>
    </sub-flow>
+    
+    
+    <flow name="other-tests-client-exception">
+        
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:start-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" responseHandler="other-obs-handler" doc:name="CoAP Start Observe"/>
+        <set-payload value="01" doc:name="Set Payload"/>
+        <request-reply storePrefix="OBS_01" timeout="15000" doc:name="Request-Reply">
+            <vm:outbound-endpoint exchange-pattern="one-way" path="other-obs-request" connector-ref="VM" doc:name="other-obs-request"/>
+            <vm:inbound-endpoint exchange-pattern="one-way" path="other-obs-reply-01" connector-ref="VM" doc:name="other-obs-reply-01"/>
+        </request-reply>
+        <logger level="INFO" doc:name="Logger"/>
+        <coap-client:stop-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" doc:name="CoAP Stop Observe"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be CONTENT" expression="#[sessionVars.response_code == '2.05']" doc:name="Validation coap.response.code"/>
+        <validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response content_format should be text/plain" expression="#[sessionVars.content_format == '0' ]" doc:name="Validation content format"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response observe should be > 0" expression="#[ java.lang.Integer.parseInt( sessionVars.observe ) &gt; 0 ]" doc:name="Validation content format"/>
+        <validation:is-true config-ref="Validation_Configuration" message="CoAP response payload should be ClientException1" expression="#[ payload == 'ClientException1' ]" doc:name="Validation content format"/>
+        
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <set-payload value="Test OK" doc:name="Set Payload"/>
+    </flow>
+    
+    
+    
+    <sub-flow name="other-tests-server-exception">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="prepare payload" encoding="UTF-8" mimeType="application/xml"/>
+        <parse-template location="testmessage_exception.xml" doc:name="set testmessage"/>
+        <enricher source="#[payload]" target="#[flowVars.test]" doc:name="Message Enricher">
+            <mulexml:xml-to-dom-transformer doc:name="XML to DOM" returnClass="org.dom4j.Document"/>
+        </enricher>
+        
+        <coap-client:get config-ref="Test_Client_Configuration" path="/test" doc:name="CoAP Client get"/>
+        
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+        <flow-ref name="other-tests-response-assert-inbound" doc:name="other-tests-response-assert-inbound"/>
+        <flow-ref name="other-tests-response-assert-payload" doc:name="other-tests-response-assert-inbound"/>
+        <set-payload value="Test OK" doc:name="Test OK" encoding="UTF-8" mimeType="text/plain"/>
+    </sub-flow>
+    
+    
 </mule>

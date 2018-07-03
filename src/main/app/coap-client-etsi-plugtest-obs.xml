@@ -95,7 +95,6 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
                 <logger level="INFO" doc:name="Logger"/>
                 <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setETag('obs_client', '0702' )]" doc:name="set new etag"/>
                 <coap-client:delete config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="Delete /obs"/>
-                <coap-client:delete config-ref="ETSI-Plugtest_Client_block32" host="#[sessionVars.host]" port="#[sessionVars.port]" path="/obs" confirmable="false" doc:name="Delete /obs"/>
             </when>
             <when expression="#[flowVars.actual_etag.equals( nl.teslanet.mule.transport.coap.commons.options.ETag.createFromHex( '0702' )) == true ]">
                 <set-session-variable variableName="response_code" value="#[message.inboundProperties.'coap.response.code' ]" encoding="UTF-8" mimeType="text/plain" doc:name="save response code"/>
@@ -285,8 +284,8 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         </request-reply>
 		<logger level="INFO" doc:name="Logger"/>
         <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be NOT_FOUND" expression="#[sessionVars.response_code == '4.04']" doc:name="Validation coap.response.code"/>
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-		<set-payload value="Test OK" doc:name="Set Payload"/>
+	    <coap-client:stop-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" doc:name="CoAP Stop Observe"/>
+	    <set-payload value="Test OK" doc:name="Set Payload"/>
 	</flow>
 	
 	<flow name="coap-client-etsi-plugtest-TD_COAP_OBS_08">
@@ -315,8 +314,8 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         </request-reply>
 		<logger level="INFO" doc:name="Logger"/>
         <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Content" expression="#[sessionVars.response_code == '2.05']" doc:name="Validation coap.response.code"/>
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-		<set-payload value="Test OK" doc:name="Set Payload"/>
+	    <coap-client:stop-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" doc:name="CoAP Stop Observe"/>
+	    <set-payload value="Test OK" doc:name="Set Payload"/>
 	</flow>
 	
 	<flow name="coap-client-etsi-plugtest-TD_COAP_OBS_10">
@@ -330,7 +329,7 @@ http://www.mulesoft.org/schema/mule/vm http://www.mulesoft.org/schema/mule/vm/cu
         </request-reply>
 		<logger level="INFO" doc:name="Logger"/>
         <validation:is-true config-ref="Validation_Configuration" message="CoAP response code should be Content" expression="#[sessionVars.response_code == '2.05']" doc:name="Validation coap.response.code"/>
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-		<set-payload value="Test OK" doc:name="Set Payload"/>
+	    <coap-client:stop-observe config-ref="ETSI-Plugtest_Client" host="#[sessionVars.host]" port="#[sessionVars.post]" path="/obs" doc:name="CoAP Stop Observe"/>
+	    <set-payload value="Test OK" doc:name="Set Payload"/>
 	</flow>
 </mule>

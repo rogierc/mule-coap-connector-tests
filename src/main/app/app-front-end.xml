@@ -250,22 +250,25 @@
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_10" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
-    
     <flow name="get:/other/all:Router">
         <flow-ref name="other-tests-all" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
 
-    <flow name="get:/other/exception:Router">
-        <flow-ref name="other-tests-exception" doc:name="Flow Reference" />
-        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
-    </flow>
     <flow name="get:/other/get-con:Router">
         <flow-ref name="other-tests-get-con" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
     <flow name="get:/other/get-non:Router">
         <flow-ref name="other-tests-get-non" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/other/client-exception:Router">
+        <flow-ref name="other-tests-client-exception" doc:name="Flow Reference" />
+        <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
+    </flow>
+    <flow name="get:/other/server-exception:Router">
+        <flow-ref name="other-tests-server-exception" doc:name="Flow Reference" />
         <exception-strategy ref="client-exception-strategy" doc:name="Reference Exception Strategy" />
     </flow>
 </mule>

@@ -115,14 +115,13 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
     </sub-flow>
 
     <sub-flow name="other-tests-server-set-outbound">
-        <set-variable variableName="outbound" value="#[ new java.util.HashMap()]" doc:name="Variable"/>
+        <set-variable variableName="outbound" value="#[ new java.util.HashMap()]" doc:name="create outbound collection"/>
         <foreach collection="#[ flowVars.test_outbound ]" doc:name="For Each outboundproperty">
-            <set-variable variableName="name" value="#[ xpath3( './name/text()', payload, 'STRING') ]" doc:name="name"/>
-            <set-variable doc:name="value" value="#[ xpath3( './value/text()', payload, 'STRING') ]" variableName="value" />
-            <set-variable variableName="tmp" value="#[ flowVars.outbound.put( flowVars.name, flowVars.value ) == empty ]" doc:name="Variable"/>
-            <logger level="INFO" doc:name="Logger"/>
+            <set-variable variableName="name" value="#[ xpath3( './name/text()', payload, 'STRING') ]" doc:name="property name"/>
+            <set-variable doc:name="property value" value="#[ xpath3( './value/text()', payload, 'STRING') ]" variableName="value" />
+            <set-variable variableName="tmp" value="#[ flowVars.outbound.put( flowVars.name, flowVars.value ) == empty ]" doc:name="put property in outbound collection"/>
         </foreach>
-        <set-variable variableName="tmp" value="#[ message.getOutboundProperties().putAll( flowVars.outbound )  || true ]" doc:name="Variable"/>
+        <set-variable variableName="outbond_is_set" value="#[ message.getOutboundProperties().putAll( flowVars.outbound )  == empty  ]" doc:name="pul all in outbond scope"/>
         
     </sub-flow>
     <sub-flow name="other-tests-server-set-payload">

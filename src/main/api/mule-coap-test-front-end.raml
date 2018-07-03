@@ -1129,7 +1129,15 @@ resourceTypes:
       responses:
         200:
           description: Tests succeeded
-  /exception:
+  /client-exception:
+    description: Test exception handling in client
+    type: other-test
+    get:
+      description: Do requests and validate expected properties
+      responses:
+        200:
+          description: Test succeeded
+  /server-exception:
     description: Test exception handling
     type: other-test
     get:

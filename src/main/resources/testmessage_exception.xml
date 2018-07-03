@@ -16,7 +16,7 @@
             <catch>
                 <set>
                     <payload>
-                        <value>TestException</value>
+                        <value>ExceptionTest</value>
                         <mimeType>text/plain</mimeType>
                     </payload>
                     <outboundProperty>
@@ -49,7 +49,7 @@
                 <value>false</value>
             </inboundProperty>
             <payload>
-                <value>TestException</value>
+                <value>ExceptionTest</value>
                 <mimeType>text/plain</mimeType>
             </payload>
         </assert>

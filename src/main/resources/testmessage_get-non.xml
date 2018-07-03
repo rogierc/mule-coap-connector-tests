@@ -11,11 +11,7 @@
             </inboundProperty>
         </assert>
     </request>
-    <process>
-        <exception>
-            <catch/>
-        </exception>
-    </process>
+ 
     <response>
         <set>
             <payload>

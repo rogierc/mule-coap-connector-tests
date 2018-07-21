@@ -9,7 +9,7 @@ http://www.mulesoft.org/schema/mule/coap-server http://www.teslanet.nl/schema/mu
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/current/mule-jms.xsd">
-    <coap-server:config name="CoAP_ETSI_Plugtest_Server" doc:name="CoAP Server: Server Configuration">
+    <coap-server:config name="CoAP_ETSI_Plugtest_Server" doc:name="CoAP Server: Server Configuration" logMessages="true">
         <coap-server:resources>
             <coap-server:resource name="test" get="true" put="true" delete="true" post="true"/>
             <coap-server:resource name="seg1" get="true">
@@ -465,7 +465,7 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="#[NullPayload.getInstance()]" encoding="UTF-8" mimeType="text/plain" doc:name="prime response"/>
-                <parse-template location="rfc7252.txt" doc:name="set large payload"/>				
+                <parse-template location="blocks.txt" doc:name="set large payload"/>				
 			</when>			
 			<otherwise>
                 <set-payload value="Unexpected request" encoding="UTF-8" mimeType="text/plain" doc:name="Unexpected method"/>
@@ -532,15 +532,21 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 			doc:name="set uri"/>
         <set-variable variableName="actual_etag" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getETag('obs_etag')]" doc:name="get actual etag"/>
         <set-variable variableName="actual_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getPayload('obs_etag')]" doc:name="get actual payload"/>
-
+        <set-variable variableName="actual_ct" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.getContentType('obs_etag')]" doc:name="get actual content type"/>
+        
 		<choice doc:name="Choice request code">
 			<when expression="#[ flowVars.method == 'GET']">
                 <set-payload value="#[ flowVars.actual_payload ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
-                <set-property propertyName="coap.opt.max_age" value="5" doc:name="set max_age"/>       				
-                <set-property propertyName="coap.response.code" value="CONTENT" doc:name="CONTENT"/>       				
+			    <set-property propertyName="coap.opt.content_format" value="#[ flowVars.actual_ct ]" doc:name="set content format"/>       				
+			    <set-property propertyName="coap.opt.max_age" value="5" doc:name="set max_age"/>       				
+			    <set-property propertyName="coap.response.code" value="CONTENT" doc:name="CONTENT"/>       				
 			</when>			
 			<when expression="#[ flowVars.method == 'PUT']">
-        		<coap-server:resource-changed config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="CoAP Server"/>
+			    
+			    <set-variable variableName="new_payload" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setPayload('obs_etag', payload )]" doc:name="get actual payload"/>
+			    <set-variable variableName="new_ct" value="#[nl.teslanet.mule.transport.coap.test.ETagMemoryStore.setContentType('obs_etag', message.inboundProperties['coap.opt.content_format'])]" doc:name="get actual content type"/>
+
+			    <coap-server:resource-changed config-ref="CoAP_ETSI_Plugtest_Server" uri="/obs" doc:name="CoAP Server"/>
                 <set-payload value="#[ NullPayload.getInstance() ]" doc:name="set content" encoding="UTF-8" mimeType="text/plain"/>
                 <set-property propertyName="coap.response.code" value="CHANGED" doc:name="CHANGED"/>
 	

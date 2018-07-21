@@ -16,7 +16,7 @@ http://www.mulesoft.org/schema/mule/jms http://www.mulesoft.org/schema/mule/jms/
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/current/mule-xml.xsd">
 	<coap-server:config name="CoAP_Test_Server"
-		doc:name="CoAP Server: Server Configuration" bindToPort="5685" bindToSecurePort="5686">
+		doc:name="CoAP Server: Server Configuration" bindToPort="5685" bindToSecurePort="5686" logMessages="true">
 		<coap-server:resources>
 			<coap-server:resource name="test" get="true" put="true" delete="true" post="true"/>
 			<coap-server:resource name="seg1" get="true">
@@ -90,11 +90,11 @@ http://www.mulesoft.org/schema/mule/xml http://www.mulesoft.org/schema/mule/xml/
             </otherwise>
         </choice>
         <choice doc:name="Choice">
-            <when expression="#[ xpath3( '/test/response/set/payload/value',  payload, 'NODE' ) == empty ]">
+            <when expression="#[ xpath3( '/test/response/set/payload',  payload, 'NODE' ) == empty ]">
                 <set-payload value="#[ NullPayload.getInstance()]" doc:name="Set Empty Payload"/>
             </when>
             <otherwise>
-                <set-payload value="#[ xpath3( '/test/response/set/payload/value/text()',  payload, 'STRING' )]" encoding="UTF-8" doc:name="set Payload value" mimeType="text/plain"/>
+                <set-payload value="#[ xpath3( '/test/response/set/payload/value/text()',  payload, 'STRING' ) ]"  doc:name="set Payload value" />
             </otherwise>
         </choice>
         <exception-strategy ref="other-tests-serverChoice_Exception_Strategy" doc:name="Reference Exception Strategy"/>

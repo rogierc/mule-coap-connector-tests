@@ -10,6 +10,23 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd">
 	
+	<sub-flow name="coap-client-etsi-plugtest-block-all">
+		
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01" doc:name="TD_COAP_BLOCK_01"/>
+		<set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_01: ' + payload ]" doc:name="Variable"/>
+		
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_02" doc:name="TD_COAP_BLOCK_02"/>
+		<set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_02: ' + payload ]" doc:name="Variable"/>
+		
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_03" doc:name="TD_COAP_BLOCK_03"/>
+		<set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_03: ' + payload ]" doc:name="Variable"/>
+		
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_04" doc:name="TD_COAP_BLOCK_04"/>
+		<set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_04: ' + payload ]" doc:name="Variable"/>
+
+		<set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
+	</sub-flow>
+	
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01">
 		<set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
 		<set-property propertyName="coap.opt.block2.szx" value="1" doc:name="set coap.opt.block2.szx"/>

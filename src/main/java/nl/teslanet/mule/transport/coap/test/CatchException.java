@@ -3,6 +3,11 @@ package nl.teslanet.mule.transport.coap.test;
 public class CatchException extends Exception
 {
 
+    /**
+     * 
+     */
+    private static final long serialVersionUID= 1L;
+
     public CatchException()
     {
         super();

@@ -1,0 +1,44 @@
+<tests>
+    <test name="test con GET default">
+        <request>
+            <method>GET</method>
+            <confirmable>true</confirmable>
+            <path>/test</path>
+            <set>
+                <outboundProperty>
+                    <name>coap.opt.content_format</name>
+                    <value>41</value>
+                </outboundProperty>
+            </set>
+        </request>
+        <response>
+            <set>
+                <payload>
+                    <value>GetResponse1</value>
+                    <mimeType>text/plain</mimeType>
+                </payload>
+                <outboundProperty>
+                    <name>coap.opt.content_format</name>
+                    <value>0</value>
+                </outboundProperty>
+            </set>
+            <assert>
+                <inboundProperty>
+                    <name>coap.response.success</name>
+                    <value>true</value>
+                </inboundProperty>
+                <inboundProperty>
+                    <name>coap.response.code</name>
+                    <value>2.05</value>
+                </inboundProperty>
+                <inboundProperty>
+                    <name>coap.opt.content_format</name>
+                    <value>0</value>
+                </inboundProperty>                
+                <payload>
+                    <value>GetResponse1</value>
+                </payload>
+            </assert>
+        </response>
+    </test>
+</tests>

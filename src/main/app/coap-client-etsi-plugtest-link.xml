@@ -1,303 +1,434 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<mule xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client" xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" xmlns:validation="http://www.mulesoft.org/schema/mule/validation" 
-	xmlns="http://www.mulesoft.org/schema/mule/core" 
+<mule xmlns:coap-client="http://www.mulesoft.org/schema/mule/coap-client"
+	xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking"
+	xmlns:validation="http://www.mulesoft.org/schema/mule/validation"
+	xmlns="http://www.mulesoft.org/schema/mule/core"
 	xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
-	xmlns:spring="http://www.springframework.org/schema/beans" 
+	xmlns:spring="http://www.springframework.org/schema/beans"
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd
 http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd">
-	
+
+	<sub-flow name="coap-client-etsi-plugtest-link-all">
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_01" doc:name="TD_COAP_LINK_01"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_01: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_02" doc:name="TD_COAP_LINK_02"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_02: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_03" doc:name="TD_COAP_LINK_03"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_03: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_04" doc:name="TD_COAP_LINK_04"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_04: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_05" doc:name="TD_COAP_LINK_05"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_05: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_06" doc:name="TD_COAP_LINK_06"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_06: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_07" doc:name="TD_COAP_LINK_07"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_07: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_08" doc:name="TD_COAP_LINK_08"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_08: ' + payload ]" doc:name="Variable"/>
+
+		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="TD_COAP_LINK_09"/>
+		<set-variable variableName="results"
+			value="#[ flowVars.results + '\nTD_COAP_LINK_09: ' + payload ]" doc:name="Variable"/>
+
+		<set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
+	</sub-flow>
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_01">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 		<set-variable variableName="found_link1" value="#[ false ]" doc:name="reset found_link1"/>
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]"/>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]"/>
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
-		<enricher doc:name="Message Enricher"  >
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
+		<enricher doc:name="Message Enricher">
 			<foreach collection="#[payload]" doc:name="For Each">
-			    <choice doc:name="Choice">
-			        <when expression="#[payload.getURI() == '/link1']">
-			            <set-variable variableName="found_link1" value="#[ true ]" doc:name="found_link1"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link2']">
-			            <set-variable variableName="found_link2" value="#[ true ]" doc:name="found_link2"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link3']">
-			            <set-variable variableName="found_link3" value="#[ true ]" doc:name="found_link3"/>
-			        </when>
-			        <otherwise>
-			            <echo-component doc:name="Echo"/>
-			        </otherwise>
-			    </choice>
+				<choice doc:name="Choice">
+					<when expression="#[payload.getURI() == '/link1']">
+						<set-variable variableName="found_link1" value="#[ true ]"
+							doc:name="found_link1"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link2']">
+						<set-variable variableName="found_link2" value="#[ true ]"
+							doc:name="found_link2"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link3']">
+						<set-variable variableName="found_link3" value="#[ true ]"
+							doc:name="found_link3"/>
+					</when>
+					<otherwise>
+						<echo-component doc:name="Echo"/>
+					</otherwise>
+				</choice>
 			</foreach>
 			<enrich source="#[flowVars.found_link1]" target="#[flowVars.found_link1]"/>
 			<enrich source="#[flowVars.found_link2]" target="#[flowVars.found_link2]"/>
 			<enrich source="#[flowVars.found_link3]" target="#[flowVars.found_link3]"/>
 		</enricher>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /link1 resource should be found." 
-			 doc:name="Validation existence /link1 resource" expression="#[flowVars.found_link1 == true]"/>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /link2 resource should be found." 
-			 doc:name="Validation existence /link2 resource" expression="#[flowVars.found_link2 == true]"/>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP link3 resource should be found." 
-			 doc:name="Validation existence /link3 resource" expression="#[flowVars.found_link3 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /link1 resource should be found."
+			doc:name="Validation existence /link1 resource"
+			expression="#[flowVars.found_link1 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /link2 resource should be found."
+			doc:name="Validation existence /link2 resource"
+			expression="#[flowVars.found_link2 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP link3 resource should be found."
+			doc:name="Validation existence /link3 resource"
+			expression="#[flowVars.found_link3 == true]"/>
 		<object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-       
+
 	</sub-flow>
-	
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_02">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 		<set-variable variableName="found_link1" value="#[ false ]" doc:name="reset found_link1"/>
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>rt=Type1</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>rt=Type1</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
-		<enricher doc:name="Message Enricher"  >
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
+		<enricher doc:name="Message Enricher">
 			<foreach collection="#[payload]" doc:name="For Each">
-			    <choice doc:name="Choice">
-			        <when expression="#[payload.getURI() == '/link1']">
-			            <set-variable variableName="found_link1" value="#[ true ]" doc:name="found_link1"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link2']">
-			            <set-variable variableName="found_link2" value="#[ true ]" doc:name="found_link2"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link3']">
-			            <set-variable variableName="found_link3" value="#[ true ]" doc:name="found_link3"/>
-			        </when>
-			        <otherwise>
-			            <echo-component doc:name="Echo"/>
-			        </otherwise>
-			    </choice>
+				<choice doc:name="Choice">
+					<when expression="#[payload.getURI() == '/link1']">
+						<set-variable variableName="found_link1" value="#[ true ]"
+							doc:name="found_link1"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link2']">
+						<set-variable variableName="found_link2" value="#[ true ]"
+							doc:name="found_link2"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link3']">
+						<set-variable variableName="found_link3" value="#[ true ]"
+							doc:name="found_link3"/>
+					</when>
+					<otherwise>
+						<echo-component doc:name="Echo"/>
+					</otherwise>
+				</choice>
 			</foreach>
 			<enrich source="#[flowVars.found_link1]" target="#[flowVars.found_link1]"/>
 			<enrich source="#[flowVars.found_link2]" target="#[flowVars.found_link2]"/>
 			<enrich source="#[flowVars.found_link3]" target="#[flowVars.found_link3]"/>
 		</enricher>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /link1 resource should be found." 
-			 doc:name="Validation existence /link1 resource" expression="#[flowVars.found_link1 == true]"/>
-		<validation:is-false config-ref="Validation_Configuration" 
-			message="CoAP /link2 resource should be found." 
-			 doc:name="Validation existence /link2 resource" expression="#[flowVars.found_link2 == true]"/>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP link3 resource should not be found." 
-			 doc:name="Validation existence /link3 resource" expression="#[flowVars.found_link3 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /link1 resource should be found."
+			doc:name="Validation existence /link1 resource"
+			expression="#[flowVars.found_link1 == true]"/>
+		<validation:is-false config-ref="Validation_Configuration"
+			message="CoAP /link2 resource should be found."
+			doc:name="Validation existence /link2 resource"
+			expression="#[flowVars.found_link2 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP link3 resource should not be found."
+			doc:name="Validation existence /link3 resource"
+			expression="#[flowVars.found_link3 == true]"/>
 		<object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
+
 	</sub-flow>
-		
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_03">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>rt=*</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
-        
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>rt=*</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
+
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
 		<foreach collection="#[payload]" doc:name="For Each">
-			<validation:is-false config-ref="Validation_Configuration" message="rt attribute should be set on Weblink"  doc:name="Validation rt attribute exists" expression="#[payload.getAttributes().getResourceTypes().isEmpty()]"/>
+			<validation:is-false config-ref="Validation_Configuration"
+				message="rt attribute should be set on Weblink"
+				doc:name="Validation rt attribute exists"
+				expression="#[payload.getAttributes().getResourceTypes().isEmpty()]"/>
 		</foreach>
-       	<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
+
 	</sub-flow>
-		
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_04">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>rt=Type2</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>rt=Type2</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
 		<foreach collection="#[payload]" doc:name="For Each">
-			<validation:is-true config-ref="Validation_Configuration" message="rt attribute should be Type2"  doc:name="Validation rt attribute exists" expression="#[payload.getAttributes().getResourceTypes().contains('Type2')]"/>
+			<validation:is-true config-ref="Validation_Configuration"
+				message="rt attribute should be Type2" doc:name="Validation rt attribute exists"
+				expression="#[payload.getAttributes().getResourceTypes().contains('Type2')]"/>
 		</foreach>
-       	<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
+
 	</sub-flow>
-	
-		
+
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_05">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 		<set-variable variableName="found_link1" value="#[ false ]" doc:name="reset found_link1"/>
 		<set-variable variableName="found_link2" value="#[ false ]" doc:name="reset found_link2"/>
 		<set-variable variableName="found_link3" value="#[ false ]" doc:name="reset found_link3"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>if=If*</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>if=If*</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
-		<enricher doc:name="Message Enricher"  >
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
+		<enricher doc:name="Message Enricher">
 			<foreach collection="#[payload]" doc:name="For Each">
-			    <choice doc:name="Choice">
-			        <when expression="#[payload.getURI() == '/link1']">
-			            <set-variable variableName="found_link1" value="#[ true ]" doc:name="found_link1"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link2']">
-			            <set-variable variableName="found_link2" value="#[ true ]" doc:name="found_link2"/>
-			        </when>
-			        <when expression="#[payload.getURI() == '/link3']">
-			            <set-variable variableName="found_link3" value="#[ true ]" doc:name="found_link3"/>
-			        </when>
-			        <otherwise>
-			            <echo-component doc:name="Echo"/>
-			        </otherwise>
-			    </choice>
+				<choice doc:name="Choice">
+					<when expression="#[payload.getURI() == '/link1']">
+						<set-variable variableName="found_link1" value="#[ true ]"
+							doc:name="found_link1"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link2']">
+						<set-variable variableName="found_link2" value="#[ true ]"
+							doc:name="found_link2"/>
+					</when>
+					<when expression="#[payload.getURI() == '/link3']">
+						<set-variable variableName="found_link3" value="#[ true ]"
+							doc:name="found_link3"/>
+					</when>
+					<otherwise>
+						<echo-component doc:name="Echo"/>
+					</otherwise>
+				</choice>
 			</foreach>
 			<enrich source="#[flowVars.found_link1]" target="#[flowVars.found_link1]"/>
 			<enrich source="#[flowVars.found_link2]" target="#[flowVars.found_link2]"/>
 			<enrich source="#[flowVars.found_link3]" target="#[flowVars.found_link3]"/>
 		</enricher>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /link1 resource should be found." 
-			 doc:name="Validation existence /link1 resource" expression="#[flowVars.found_link1 == true]"/>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /link2 resource should be found." 
-			 doc:name="Validation existence /link2 resource" expression="#[flowVars.found_link2 == true]"/>
-		<validation:is-false config-ref="Validation_Configuration" 
-			message="CoAP link3 resource should not be found." 
-			 doc:name="Validation existence /link3 resource" expression="#[flowVars.found_link3 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /link1 resource should be found."
+			doc:name="Validation existence /link1 resource"
+			expression="#[flowVars.found_link1 == true]"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /link2 resource should be found."
+			doc:name="Validation existence /link2 resource"
+			expression="#[flowVars.found_link2 == true]"/>
+		<validation:is-false config-ref="Validation_Configuration"
+			message="CoAP link3 resource should not be found."
+			doc:name="Validation existence /link3 resource"
+			expression="#[flowVars.found_link3 == true]"/>
 		<object-to-string-transformer doc:name="Object to String"/>
-        <set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
+
 	</sub-flow>
-		
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_06">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>sz=*</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
-        
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>sz=*</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
+
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
 		<foreach collection="#[payload]" doc:name="For Each">
-			<validation:is-not-empty config-ref="Validation_Configuration" message="sz attribute should be set on Weblink"  doc:name="Validation sz attribute exists" value="#[payload.getAttributes().getMaximumSizeEstimate()]"/>
+			<validation:is-not-empty config-ref="Validation_Configuration"
+				message="sz attribute should be set on Weblink"
+				doc:name="Validation sz attribute exists"
+				value="#[payload.getAttributes().getMaximumSizeEstimate()]"/>
 		</foreach>
-       	<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
-      
+
+
 	</sub-flow>
-	
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_07">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>href=/link1</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
-        
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>href=/link1</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
+
 		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
 		<foreach collection="#[payload]" doc:name="For Each">
-			<validation:is-true config-ref="Validation_Configuration" message="Weblink uri should be /link1"  doc:name="Validation uri" expression="#[payload.getURI().equals( '/link1' )]"/>
+			<validation:is-true config-ref="Validation_Configuration"
+				message="Weblink uri should be /link1" doc:name="Validation uri"
+				expression="#[payload.getURI().equals( '/link1' )]"/>
 		</foreach>
-       	<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-      
-      
+
+
 	</sub-flow>
-	
+
 	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_08">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
 
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]">
-            <coap-client:query-parameters>
-                <coap-client:query-parameter>href=/link*</coap-client:query-parameter>
-            </coap-client:query-parameters>
-        </coap-client:discover>
-        
-		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
-		<foreach collection="#[payload]" doc:name="For Each">
-			<validation:matches-regex message="link uri should match /link*" regex="^/link.*" caseSensitive="true" value="#[payload.getURI()]" config-ref="Validation_Configuration" doc:name="Validation uri"/>
-		</foreach>
-       	<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
-		<logger message="#[payload]" level="INFO" doc:name="Logger"/>  
-	</sub-flow>
-	
-	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_09">
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>
-		<set-variable variableName="found_path" value="#[ false ]" doc:name="reset found_path"/>
-		
-		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]" doc:name="CoAP Discover" host="#[sessionVars.host]"/>
-		
-		<logger level="INFO" doc:name="Logger"/>
-		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"  doc:name="Validation success" value="#[payload]"/>
-		<foreach collection="#[payload]" doc:name="For Each">
-		    <choice doc:name="Choice">
-		        <when expression="#[payload.getURI() == '/path']">
-		            <set-variable variableName="found_path" value="#[ true ]" doc:name="found_path"/>
-            		<logger message="found /path" level="INFO" doc:name="Logger"/>
-           			<validation:is-true config-ref="Validation_Configuration" message="/path ct attribute should be 40"  doc:name="Validation ct has value 40" expression="#[payload.getAttributes().getContentTypes().contains('40')]"/> 		
-		        </when>
-		        <otherwise>
-		            <echo-component doc:name="Echo"/>
-		        </otherwise>
-		    </choice>
-		</foreach>
-		<validation:is-true config-ref="Validation_Configuration" 
-			message="CoAP /path resource should be found." 
-			 doc:name="Validation existence /path resource" expression="#[flowVars.found_path == true]"/>
-		
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>		
-        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path" doc:name="CoAP Get /path" host="#[sessionVars.host]" port="#[sessionVars.post]"/>
-        
-        <logger level="INFO" doc:name="Logger"/>
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
-        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CONTENT" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
-        <validation:is-true config-ref="Validation_Configuration" message="CoAP response content format is not (application/link-format" expression="#[message.inboundProperties.'coap.opt.content_format' == 40 ]" doc:name="Validation coap.opt.content_format"/>
-        <validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
-		<validation:matches-regex message="content should contain link /path/sub1" regex=".*&lt;/path/sub1&gt;.*" caseSensitive="true" value="#[payload]" config-ref="Validation_Configuration" doc:name="Validation /path/sub1 link"/>
-		<validation:matches-regex message="content should contain link /path/sub2" regex=".*&lt;/path/sub2&gt;.*" caseSensitive="true" value="#[payload]" config-ref="Validation_Configuration" doc:name="Validation /path/sub2 link"/>
-		<validation:matches-regex message="content should contain link /path/sub3" regex=".*&lt;/path/sub3&gt;.*" caseSensitive="true" value="#[payload]" config-ref="Validation_Configuration" doc:name="Validation /path/sub3 link"/>
-		
-		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8" mimeType="text/plain"/>		
-        <coap-client:get config-ref="ETSI-Plugtest_Client" path="/path/sub1" doc:name="CoAP Get /path/sub1" host="#[sessionVars.host]" port="#[sessionVars.post]"/>
-        
-        <logger level="INFO" doc:name="Logger"/>
-        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
-        <validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure" expression="#[message.inboundProperties.'coap.response.success' ]" doc:name="Validation coap.response.success"/>
-        <validation:is-true config-ref="Validation_Configuration" message="CoAP response code is unequal CONTENT" expression="#[message.inboundProperties.'coap.response.code' == '2.05']" doc:name="Validation coap.response.code"/>
-        <validation:validate-size config-ref="Validation_Configuration" message="CoAP response payload should not be empty" value="#[payload]" min="1" doc:name="Validation payload not empty"/>
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]">
+			<coap-client:query-parameters>
+				<coap-client:query-parameter>href=/link*</coap-client:query-parameter>
+			</coap-client:query-parameters>
+		</coap-client:discover>
 
-        <set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<logger level="INFO" doc:name="Logger"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
+		<foreach collection="#[payload]" doc:name="For Each">
+			<validation:matches-regex message="link uri should match /link*" regex="^/link.*"
+				caseSensitive="true" value="#[payload.getURI()]"
+				config-ref="Validation_Configuration" doc:name="Validation uri"/>
+		</foreach>
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
 		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
-       
 	</sub-flow>
-	
+
+	<sub-flow name="coap-client-etsi-plugtest-TD_COAP_LINK_09">
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
+		<set-variable variableName="found_path" value="#[ false ]" doc:name="reset found_path"/>
+
+		<coap-client:discover config-ref="ETSI-Plugtest_Client" port="#[sessionVars.post]"
+			doc:name="CoAP Discover" host="#[sessionVars.host]"/>
+
+		<logger level="INFO" doc:name="Logger"/>
+		<validation:is-not-empty config-ref="Validation_Configuration" message="Failed to discover"
+			doc:name="Validation success" value="#[payload]"/>
+		<foreach collection="#[payload]" doc:name="For Each">
+			<choice doc:name="Choice">
+				<when expression="#[payload.getURI() == '/path']">
+					<set-variable variableName="found_path" value="#[ true ]" doc:name="found_path"/>
+					<logger message="found /path" level="INFO" doc:name="Logger"/>
+					<validation:is-true config-ref="Validation_Configuration"
+						message="/path ct attribute should be 40"
+						doc:name="Validation ct has value 40"
+						expression="#[payload.getAttributes().getContentTypes().contains('40')]"/>
+				</when>
+				<otherwise>
+					<echo-component doc:name="Echo"/>
+				</otherwise>
+			</choice>
+		</foreach>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP /path resource should be found."
+			doc:name="Validation existence /path resource"
+			expression="#[flowVars.found_path == true]"/>
+
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
+		<coap-client:get config-ref="ETSI-Plugtest_Client" path="/path" doc:name="CoAP Get /path"
+			host="#[sessionVars.host]" port="#[sessionVars.post]"/>
+
+		<logger level="INFO" doc:name="Logger"/>
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure"
+			expression="#[message.inboundProperties.'coap.response.success' ]"
+			doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP response code is unequal CONTENT"
+			expression="#[message.inboundProperties.'coap.response.code' == '2.05']"
+			doc:name="Validation coap.response.code"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP response content format is not (application/link-format"
+			expression="#[message.inboundProperties.'coap.opt.content_format' == 40 ]"
+			doc:name="Validation coap.opt.content_format"/>
+		<validation:validate-size config-ref="Validation_Configuration"
+			message="CoAP response payload should not be empty" value="#[payload]" min="1"
+			doc:name="Validation payload not empty"/>
+		<validation:matches-regex message="content should contain link /path/sub1"
+			regex=".*&lt;/path/sub1&gt;.*" caseSensitive="true" value="#[payload]"
+			config-ref="Validation_Configuration" doc:name="Validation /path/sub1 link"/>
+		<validation:matches-regex message="content should contain link /path/sub2"
+			regex=".*&lt;/path/sub2&gt;.*" caseSensitive="true" value="#[payload]"
+			config-ref="Validation_Configuration" doc:name="Validation /path/sub2 link"/>
+		<validation:matches-regex message="content should contain link /path/sub3"
+			regex=".*&lt;/path/sub3&gt;.*" caseSensitive="true" value="#[payload]"
+			config-ref="Validation_Configuration" doc:name="Validation /path/sub3 link"/>
+
+		<set-payload value="#[ NullPayload.getInstance() ]" doc:name="Set Payload" encoding="UTF-8"
+			mimeType="text/plain"/>
+		<coap-client:get config-ref="ETSI-Plugtest_Client" path="/path/sub1"
+			doc:name="CoAP Get /path/sub1" host="#[sessionVars.host]" port="#[sessionVars.post]"/>
+
+		<logger level="INFO" doc:name="Logger"/>
+		<byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<validation:is-true config-ref="Validation_Configuration" message="CoAP result is failure"
+			expression="#[message.inboundProperties.'coap.response.success' ]"
+			doc:name="Validation coap.response.success"/>
+		<validation:is-true config-ref="Validation_Configuration"
+			message="CoAP response code is unequal CONTENT"
+			expression="#[message.inboundProperties.'coap.response.code' == '2.05']"
+			doc:name="Validation coap.response.code"/>
+		<validation:validate-size config-ref="Validation_Configuration"
+			message="CoAP response payload should not be empty" value="#[payload]" min="1"
+			doc:name="Validation payload not empty"/>
+
+		<set-payload value="Test OK: #[payload]" doc:name="Set Payload"/>
+		<logger message="#[payload]" level="INFO" doc:name="Logger"/>
+
+	</sub-flow>
+
 </mule>

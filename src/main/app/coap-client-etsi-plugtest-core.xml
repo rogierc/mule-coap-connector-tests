@@ -7,8 +7,8 @@
 http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
 http://www.mulesoft.org/schema/mule/coap-client http://www.teslanet.nl/schema/mule/coap-client/1.0/mule-coap-client.xsd
 http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mule/validation/current/mule-validation.xsd">
-    <coap-client:config name="ETSI-Plugtest_Client" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration"/>
-    <coap-client:config name="ETSI-Plugtest_Client_block32" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration"/>
+    <coap-client:config name="ETSI-Plugtest_Client" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration" logMessages="true"/>
+    <coap-client:config name="ETSI-Plugtest_Client_block32" host="127.0.0.1" port="5683" doc:name="CoAP Client: Configuration" logMessages="true"/>
     <validation:config name="Validation_Configuration" doc:name="Validation Configuration"/>
     
     <choice-exception-strategy name="client-exception-strategy" >
@@ -22,6 +22,8 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
     </choice-exception-strategy>
     
     <sub-flow name="coap-client-etsi-plugtest-set-params">
+        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
+        <set-variable variableName="results" value="#[ 'Results:\n' ]" doc:name="Variable"/>
         <choice doc:name="set host if present">
             <when expression="#[ message.inboundProperties.'http.query.params'.host != empty ]">
                 <set-session-variable variableName="host" value="#[ message.inboundProperties.'http.query.params'.host ]" doc:name="set host"/>
@@ -40,9 +42,7 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         </choice>
     </sub-flow>
     
-    <sub-flow name="coap-client-etsi-plugtest-all">
-        <set-payload value="#[NullPayload.getInstance()]" doc:name="Set Payload"/>
-        <set-variable variableName="results" value="#[ 'Results:\n' ]" doc:name="Variable"/>
+    <sub-flow name="coap-client-etsi-plugtest-core-all">
         
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_01_10" doc:name="TD_COAP_CORE_01_10"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_CORE_01: ' + payload ]" doc:name="Variable"/>
@@ -98,66 +98,16 @@ http://www.mulesoft.org/schema/mule/validation http://www.mulesoft.org/schema/mu
         <flow-ref name="coap-client-etsi-plugtest-TD_COAP_CORE_23" doc:name="TD_COAP_CORE_23"/>
         <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_CORE_23: ' + payload ]" doc:name="Variable"/>
 
-		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_01" doc:name="TD_COAP_LINK_01"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_01: ' + payload ]" doc:name="Variable"/>
+        <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
+	</sub-flow>
+	
+    <sub-flow name="coap-client-etsi-plugtest-all">
+
+		<flow-ref name="coap-client-etsi-plugtest-core-all" doc:name="TD_COAP_CORE_*"/>
+		<flow-ref name="coap-client-etsi-plugtest-link-all" doc:name="TD_COAP_LINK_*"/>
+		<flow-ref name="coap-client-etsi-plugtest-block-all" doc:name="TD_COAP_BLOCK_*"/>
+		<flow-ref name="coap-client-etsi-plugtest-observe-all" doc:name="TD_COAP_OBS_*"/>
         
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_02" doc:name="TD_COAP_LINK_02"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_02: ' + payload ]" doc:name="Variable"/>
-
-		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_03" doc:name="TD_COAP_LINK_03"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_03: ' + payload ]" doc:name="Variable"/>
-        
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_04" doc:name="TD_COAP_LINK_04"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_04: ' + payload ]" doc:name="Variable"/>
-
- 		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_05" doc:name="TD_COAP_LINK_05"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_05: ' + payload ]" doc:name="Variable"/>
-        
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_06" doc:name="TD_COAP_LINK_06"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_06: ' + payload ]" doc:name="Variable"/>
-
-		<flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_07" doc:name="TD_COAP_LINK_07"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_07: ' + payload ]" doc:name="Variable"/>
-        
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_08" doc:name="TD_COAP_LINK_08"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_08: ' + payload ]" doc:name="Variable"/>
- 
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_LINK_09" doc:name="TD_COAP_LINK_09"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_LINK_09: ' + payload ]" doc:name="Variable"/>
- 
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_01" doc:name="TD_COAP_BLOCK_01"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_01: ' + payload ]" doc:name="Variable"/>
- 
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_02" doc:name="TD_COAP_BLOCK_02"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_02: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_03" doc:name="TD_COAP_BLOCK_03"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_03: ' + payload ]" doc:name="Variable"/>
- 
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_BLOCK_04" doc:name="TD_COAP_BLOCK_04"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_BLOCK_04: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_01_03" doc:name="TD_COAP_OBS_01_03"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_01: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_02" doc:name="TD_COAP_OBS_02"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_02: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_06" doc:name="TD_COAP_OBS_06"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_06: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_07" doc:name="TD_COAP_OBS_07"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_07: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_08" doc:name="TD_COAP_OBS_08"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_08: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_09" doc:name="TD_COAP_OBS_09"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_09: ' + payload ]" doc:name="Variable"/>
-
-        <flow-ref name="coap-client-etsi-plugtest-TD_COAP_OBS_10" doc:name="TD_COAP_OBS_10"/>
-        <set-variable variableName="results" value="#[ flowVars.results + '\nTD_COAP_OBS_10: ' + payload ]" doc:name="Variable"/>
-
         <set-payload value="#[flowVars.results]" doc:name="Set Payload"/>
     </sub-flow >
     

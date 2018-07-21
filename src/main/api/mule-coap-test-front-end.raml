@@ -122,6 +122,14 @@ resourceTypes:
           description: "collected results of the tests"
   /core:
     description: Test core CoAP features.
+    /all:
+      description: Perform all core ETSI plugtests.
+      type: etsi-plugtest
+      get:
+        description: "Request all core tests"
+        responses:
+          200:
+            description: "collected results of the tests"
     /TD_COAP_CORE_01:
       description: Perform GET transaction (CON mode)
       type: etsi-plugtest
@@ -580,6 +588,14 @@ resourceTypes:
                 Code = 140 (4.12 Precondition Failed);"
   /link:
     description: Test support of CoRE Link Format.
+    /all:
+      description: Perform all link ETSI plugtests.
+      type: etsi-plugtest
+      get:
+        description: "Request all link tests"
+        responses:
+          200:
+            description: "collected results of the tests"
     /TD_COAP_LINK_01:
       description: "Access to well-known interface for resource discovery.
         Client and server supports CoRE Link Format. 
@@ -747,6 +763,14 @@ resourceTypes:
               \nClient displays the retrieved sub-resource."
   /block:
     description: Test support of Blockwise transfers.
+    /all:
+      description: Perform all block ETSI plugtests.
+      type: etsi-plugtest
+      get:
+        description: "Request all block tests"
+        responses:
+          200:
+            description: "collected results of the tests"
     /TD_COAP_BLOCK_01:
       description: "Handle GET blockwise transfer for large resource (early negotiation).
         \n- Client supports Block transfers;
@@ -846,6 +870,14 @@ resourceTypes:
 
   /observe:
     description: Test support of Observing Resources.
+    /all:
+      description: Perform all observe ETSI plugtests.
+      type: etsi-plugtest
+      get:
+        description: "Request all observer tests"
+        responses:
+          200:
+            description: "collected results of the tests"
 #TODO: not OK yet, server needs more controll over non/con notifications              
     /TD_COAP_OBS_01:
       description: "Handle resource observation with CON messages.
@@ -1161,4 +1193,14 @@ resourceTypes:
       responses:
         200:
           description: Test succeeded
+   
+  /multiple1:
+    description: Multiple Tests 
+    type: other-test
+    get:
+      description: Do all requests and validate expected results
+      responses:
+        200:
+          description: Test succeeded
+   
       
